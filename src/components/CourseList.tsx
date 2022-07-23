@@ -1,10 +1,13 @@
 import {
   DataGrid, GridColDef, GridToolbarContainer,
-  GridToolbarQuickFilter, GridFilterModel, GridFilterOperator, GridFilterItem, GridCellParams
+  GridFilterModel, GridFilterOperator, GridFilterItem, GridCellParams
 } from '@mui/x-data-grid';
 import { useState, useMemo } from 'react';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import SearchIcon from '@mui/icons-material/Search';
 import InfoIcon from '@mui/icons-material/Info';
 import ToggleButton from '@mui/material/ToggleButton';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -14,9 +17,10 @@ import CourseInfo from './CourseInfo';
 interface CustomToolbarProps {
   showSelected: boolean;
   setShowSelected: (showSelected: boolean) => void;
+  setSearch: (search: string) => void;
 }
 
-const CustomToolbar = ({ showSelected, setShowSelected }: CustomToolbarProps) => {
+const CustomToolbar = ({ showSelected, setShowSelected, setSearch }: CustomToolbarProps) => {
   return (
     <GridToolbarContainer style={{ margin: '8px' }}>
       <ToggleButton
@@ -28,7 +32,10 @@ const CustomToolbar = ({ showSelected, setShowSelected }: CustomToolbarProps) =>
         style={{ marginBottom: '8px', padding: '5px 15px' }}>
         <CheckCircleIcon fontSize='small' style={{ marginRight: '4px' }} /> Show selected only
       </ToggleButton>
-      <GridToolbarQuickFilter />
+      <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+        <SearchIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
+        <TextField label='Search' variant='standard' onChange={(event: any) => setSearch(event.target.value)} />
+      </Box>
     </GridToolbarContainer>
   );
 };
@@ -41,15 +48,17 @@ interface Props {
   setHovered: (hovered: string | null) => void;
 }
 
-const selectedOperator: GridFilterOperator = {
-  value: 'selected',
+const operator: GridFilterOperator = {
+  value: 'courseFilter',
   getApplyFilterFn: (filterItem: GridFilterItem) => {
     return (params: GridCellParams): boolean => {
+      const searchMatch = params.value.includes(filterItem.value.search);
+      
       if (!filterItem.value.showSelected) {
-        return true;
+        return searchMatch;
       }
 
-      return (filterItem.value.selected).includes(params.value as string);
+      return searchMatch && (filterItem.value.selected).includes(params.value as string);
     };
   },
 };
@@ -57,6 +66,7 @@ const selectedOperator: GridFilterOperator = {
 const CourseList = ({ timetable, selected, hovered, setSelected, setHovered }: Props) => {
   const [info, setInfo] = useState<string | null>(null);
   const [showSelected, setShowSelected] = useState(false);
+  const [search, setSearch] = useState('');
 
   const columns: GridColDef[] = [
     {
@@ -64,7 +74,7 @@ const CourseList = ({ timetable, selected, hovered, setSelected, setHovered }: P
       headerName: 'Course',
       width: 180,
       disableColumnMenu: true,
-      filterOperators: [selectedOperator],
+      filterOperators: [operator],
     },
     {
       field: 'info',
@@ -117,11 +127,11 @@ const CourseList = ({ timetable, selected, hovered, setSelected, setHovered }: P
     return {
       items: [{
         columnField: 'course',
-        operatorValue: 'selected',
-        value: { selected: selected, showSelected: showSelected },
+        operatorValue: 'courseFilter',
+        value: { selected: selected, showSelected: showSelected, search: search },
       } as GridFilterItem],
     } as GridFilterModel;
-  }, [selected, showSelected]);
+  }, [selected, showSelected, search]);
 
   return (
     <>
@@ -141,6 +151,7 @@ const CourseList = ({ timetable, selected, hovered, setSelected, setHovered }: P
             toolbar: {
               showSelected: showSelected,
               setShowSelected: setShowSelected,
+              setSearch: setSearch,
             },
           }}
           rowHeight={40}
