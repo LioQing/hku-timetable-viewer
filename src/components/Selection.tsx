@@ -9,13 +9,14 @@ import Course from '../utils/Course';
 
 interface Props {
   timetable: Map<string, Course>;
+  selected: string[];
   hovered: string | null;
   setTimetable: (timetable: Map<string, Course>) => void;
   setSelected: (selected: string[]) => void;
   setHovered: (hovered: string | null) => void;
 }
 
-const Selection = ({ timetable, hovered, setTimetable, setSelected, setHovered }: Props) => {
+const Selection = ({ timetable, selected, hovered, setTimetable, setSelected, setHovered }: Props) => {
   const [introOpen, setIntroOpen] = useState<boolean>(false);
   
   return (
@@ -31,7 +32,13 @@ const Selection = ({ timetable, hovered, setTimetable, setSelected, setHovered }
       padding: '0px',
     }}>
       <Upload setTimetable={setTimetable} setSelected={setSelected} setHovered={setHovered} />
-      <CourseList timetable={timetable} hovered={hovered} setSelected={setSelected} setHovered={setHovered} />
+      <CourseList
+        timetable={timetable}
+        selected={selected}
+        hovered={hovered}
+        setSelected={setSelected}
+        setHovered={setHovered}
+      />
       <Button
         variant='outlined'
         onClick={(_) => setIntroOpen(true)}

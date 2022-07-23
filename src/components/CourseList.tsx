@@ -1,17 +1,33 @@
 import {
   DataGrid, GridColDef, GridToolbarContainer,
-  GridToolbarQuickFilter
+  GridToolbarQuickFilter, GridFilterModel, GridFilterOperator, GridFilterItem, GridCellParams
 } from '@mui/x-data-grid';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
+import ToggleButton from '@mui/material/ToggleButton';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Course from '../utils/Course';
 import CourseInfo from './CourseInfo';
 
-const CustomToolbar = () => {
+interface CustomToolbarProps {
+  showSelected: boolean;
+  setShowSelected: (showSelected: boolean) => void;
+}
+
+const CustomToolbar = ({ showSelected, setShowSelected }: CustomToolbarProps) => {
   return (
-    <GridToolbarContainer>
+    <GridToolbarContainer style={{ margin: '8px' }}>
+      <ToggleButton
+        value='show selected'
+        selected={showSelected}
+        onChange={(_) => {
+          setShowSelected(!showSelected);
+        }}
+        style={{ marginBottom: '8px', padding: '5px 15px' }}>
+        <CheckCircleIcon fontSize='small' style={{ marginRight: '4px' }} /> Show selected only
+      </ToggleButton>
       <GridToolbarQuickFilter />
     </GridToolbarContainer>
   );
@@ -19,25 +35,43 @@ const CustomToolbar = () => {
 
 interface Props {
   timetable: Map<string, Course>;
+  selected: string[];
   hovered: string | null;
   setSelected: (selected: string[]) => void;
   setHovered: (hovered: string | null) => void;
 }
 
-const CourseList = ({ timetable, hovered, setSelected, setHovered }: Props) => {
-   const [info, setInfo] = useState<string | null>(null);
+const selectedOperator: GridFilterOperator = {
+  value: 'selected',
+  getApplyFilterFn: (filterItem: GridFilterItem) => {
+    return (params: GridCellParams): boolean => {
+      if (!filterItem.value.showSelected) {
+        return true;
+      }
+
+      return (filterItem.value.selected).includes(params.value as string);
+    };
+  },
+};
+
+const CourseList = ({ timetable, selected, hovered, setSelected, setHovered }: Props) => {
+  const [info, setInfo] = useState<string | null>(null);
+  const [showSelected, setShowSelected] = useState(false);
 
   const columns: GridColDef[] = [
     {
       field: 'course',
       headerName: 'Course',
       width: 180,
+      disableColumnMenu: true,
+      filterOperators: [selectedOperator],
     },
     {
       field: 'info',
       headerName: 'Info',
       width: 50,
       sortable: false,
+      disableColumnMenu: true,
       renderCell: (params) => {
         const onClick = (event: any) => {
           event.stopPropagation();
@@ -79,6 +113,16 @@ const CourseList = ({ timetable, hovered, setSelected, setHovered }: Props) => {
     setHovered(null);
   };
 
+  const filterModel = useMemo(() => {
+    return {
+      items: [{
+        columnField: 'course',
+        operatorValue: 'selected',
+        value: { selected: selected, showSelected: showSelected },
+      } as GridFilterItem],
+    } as GridFilterModel;
+  }, [selected, showSelected]);
+
   return (
     <>
       <Paper elevation={3} style={{ padding: 0, width: '100%' }}>
@@ -93,14 +137,19 @@ const CourseList = ({ timetable, hovered, setSelected, setHovered }: Props) => {
             cell: {
               onMouseEnter: onRowMouseEnter,
               onMouseLeave: onRowMouseLeave,
-            }
+            },
+            toolbar: {
+              showSelected: showSelected,
+              setShowSelected: setShowSelected,
+            },
           }}
           rowHeight={40}
           rows={rows}
           columns={columns}
-          pageSize={10}
-          rowsPerPageOptions={[10]}
+          pageSize={8}
+          rowsPerPageOptions={[8]}
           onSelectionModelChange={onSelectionModelChange}
+          filterModel={filterModel}
           sx={{
             '& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer': {
               display: 'none',

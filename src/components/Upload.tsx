@@ -84,7 +84,7 @@ const Upload = ({ setTimetable, setSelected, setHovered }: Props) => {
       variant='contained'
       component='label'
       style={{ margin: '8px' }}>
-      <Typography variant='caption'>
+      <Typography>
         Upload Timetable XLSX File
       </Typography>
       <input

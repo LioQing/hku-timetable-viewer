@@ -54,7 +54,7 @@ const processTimetable = (
   hovered: string | null
 ): TimeSlotData[][] => {
   var data: TimeSlotData[][] = [];
-  for (let i = 0; i < 26; i++) {
+  for (let i = 0; i < 28; i++) {
     data.push([]);
     for (let j = 0; j < 7; j++) {
       data[i].push({
@@ -76,7 +76,7 @@ const processTimetable = (
     const course = maybeCourse as Course;
     for (const courseTime of course.times) {
       for (const [dayIndex, day] of courseTime.weekday.entries()) {
-        if (!day) {
+        if (!day || dayIndex >= data[0].length || dayIndex < 0) {
           continue;
         }
         
@@ -84,6 +84,10 @@ const processTimetable = (
         const endIndex = getIndexFromEndTime(courseTime.endTime);
 
         for (let i = startIndex; i <= endIndex; i++) {
+          if (i >= data.length || i < 0) {
+            continue;
+          }
+
           var datum = data[i][dayIndex];
           if (datum.selected === null) {
             datum.selected = id;
@@ -116,7 +120,7 @@ const processTimetable = (
     const course = maybeCourse as Course;
     for (const courseTime of course.times) {
       for (const [dayIndex, day] of courseTime.weekday.entries()) {
-        if (!day) {
+        if (!day || dayIndex >= data[0].length || dayIndex < 0) {
           continue;
         }
         
@@ -124,6 +128,10 @@ const processTimetable = (
         const endIndex = getIndexFromEndTime(courseTime.endTime);
 
         for (let i = startIndex; i <= endIndex; i++) {
+          if (i >= data.length || i < 0) {
+            continue;
+          }
+
           data[i][dayIndex].hovered = true;
         }
       }
@@ -151,14 +159,14 @@ const Timetable = ({ timetable, selected, hovered }: Props) => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ borderBottom: 'none' }} style={{ padding: '8px' }} />
+            <TableCell sx={{ borderBottom: 'none' }} style={{ padding: 0 }} />
             {weekdays.map(day => {
               return (
                 <TableCell
                   key={`${day}-day`}
                   align='center' 
                   sx={{ borderBottom: 'none' }}
-                  style={{ padding: '8px' }}>
+                  style={{ padding: 0 }}>
                   {day}
                 </TableCell>
               );
@@ -166,7 +174,7 @@ const Timetable = ({ timetable, selected, hovered }: Props) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {Array(26)
+          {Array(28)
             .fill(0)
             .map((_, i) => {
               return (

@@ -14,6 +14,7 @@ const App = () => {
       <Timetable timetable={timetable} selected={selected} hovered={hovered} />
       <Selection
         timetable={timetable}
+        selected={selected}
         hovered={hovered}
         setTimetable={setTimetable}
         setSelected={setSelected}

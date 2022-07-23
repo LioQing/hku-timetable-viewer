@@ -1,5 +1,6 @@
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Button from '@mui/material/Button';
 
 const Intro = () => {
   return (
@@ -20,6 +21,12 @@ const Intro = () => {
         <br />
         When multiple courses have a conflicted time slot, you can hover over the time slot to see which courses are conflicted.
       </Typography>
+      <Button
+        href='https://github.com/LioQing/hku-timetable-viewer'
+        variant='outlined'
+        style={{ marginTop: '16px' }}>
+        Source Code on GitHub
+      </Button>
     </Container>
   )
 };
