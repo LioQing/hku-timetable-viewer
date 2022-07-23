@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/hku-timetable-viewer/static/js/main.7a9dfa6c.js",
+    "index.html": "/hku-timetable-viewer/index.html",
+    "main.7a9dfa6c.js.map": "/hku-timetable-viewer/static/js/main.7a9dfa6c.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.7a9dfa6c.js"
+  ]
+}
