@@ -1,0 +1,32 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    
+    strategy:
+      matrix:
+        node-version: [16.x]
+        
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3.2.0
+        with:
+          node-version: ${{ matrix.node-version }}
+          
+      - name: npm ci, build
+        run: |
+          npm ci
+          npm run build
+      
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.PAGES_DEPLOY_KEY }}
+          publish_dir: ./build
