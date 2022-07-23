@@ -8,3 +8,5 @@
 Click the heading above to visit the web app.
 A web app to view and plan your timetable given the class timetable.
 Built in hurry, may have bugs and performance issues.
+
+![screenshot](screenshot.png)
