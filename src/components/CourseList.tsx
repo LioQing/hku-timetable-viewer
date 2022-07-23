@@ -65,11 +65,13 @@ const operator: GridFilterOperator = {
   value: 'courseFilter',
   getApplyFilterFn: (filterItem: GridFilterItem) => {
     return (params: GridCellParams): boolean => {
+      const course = filterItem.value.timetable.get(params.value);
+
       const searchMatch = params.value.includes(filterItem.value.search);
       const showSelected = filterItem.value.showSelected;
       const selectedMatch = filterItem.value.selected.includes(params.value);
       const semMatch = filterItem.value.sem === 0
-        || filterItem.value.timetable.get(params.value).term.includes(`Sem ${filterItem.value.sem}`);
+        || (course ? course.term.includes(`Sem ${filterItem.value.sem}`) : false);
 
       return semMatch && searchMatch && (!showSelected || (showSelected && selectedMatch));
     };
@@ -176,8 +178,9 @@ const CourseList = ({ timetable, selected, hovered, setSelected, setHovered }: P
               setSem: setSem,
             },
           }}
-          rowHeight={40}
+          rowHeight={28}
           rows={rows}
+          headerHeight={32}
           columns={columns}
           pageSize={8}
           rowsPerPageOptions={[8]}

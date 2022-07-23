@@ -10,43 +10,13 @@ import TableRow from '@mui/material/TableRow';
 import TimeSlot from './TimeSlot';
 import Course from '../utils/Course';
 import TimeSlotData from '../utils/TimeSlotData';
-
-const getStartTimeFromIndex = (index: number): Date => {
-  return addHours(
-    new Date('01/01/1970 08:30'),
-    index / 2,
-  );
-};
-
-const getEndTimeFromIndex = (index: number): Date => {
-  return addHours(
-    new Date('01/01/1970 08:50'),
-    index / 2,
-  );
-};
-
-const getIndexFromStartTime = (startTime: Date): number => {
-  const firstTime = new Date('01/01/1970 08:30');
-  return Math.floor(
-    (
-      startTime.getHours() * 60 + startTime.getMinutes() -
-      firstTime.getHours() * 60 - firstTime.getMinutes()
-    ) / 30);
-};
-
-const getIndexFromEndTime = (startTime: Date): number => {
-  const firstTime = new Date('01/01/1970 08:50');
-  return Math.floor(
-    (
-      startTime.getHours() * 60 + startTime.getMinutes() -
-      firstTime.getHours() * 60 - firstTime.getMinutes()
-    ) / 30);
-};
-
-const addHours = (date: Date, h: number) => {
-  date.setTime(date.getTime() + (h * 60 * 60 * 1000));
-  return date;
-};
+import {
+  getStartTimeFromIndex,
+  getEndTimeFromIndex,
+  getIndexFromStartTime,
+  getIndexFromEndTime,
+  getHourString,
+} from '../utils/TimeUtils';
 
 const processTimetable = (
   timetable: Map<string, Course>,
@@ -54,7 +24,7 @@ const processTimetable = (
   hovered: string | null
 ): TimeSlotData[][] => {
   var data: TimeSlotData[][] = [];
-  for (let i = 0; i < 28; i++) {
+  for (let i = 0; i < 30; i++) {
     data.push([]);
     for (let j = 0; j < 7; j++) {
       data[i].push({
@@ -145,10 +115,12 @@ interface Props {
   timetable: Map<string, Course>;
   selected: string[];
   hovered: string | null;
+  hour: number[];
+  days: boolean[];
 }
 
-const Timetable = ({ timetable, selected, hovered }: Props) => {
-  const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const Timetable = ({ timetable, selected, hovered, hour, days }: Props) => {
+  const daysName = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   const data = useMemo(() => {
     return processTimetable(timetable, selected, hovered);
@@ -160,7 +132,11 @@ const Timetable = ({ timetable, selected, hovered }: Props) => {
         <TableHead>
           <TableRow>
             <TableCell sx={{ borderBottom: 'none' }} style={{ padding: 0 }} />
-            {weekdays.map(day => {
+            {daysName.map((day, i) => {
+              if (!days[i]) {
+                return null;
+              }
+
               return (
                 <TableCell
                   key={`${day}-day`}
@@ -174,9 +150,13 @@ const Timetable = ({ timetable, selected, hovered }: Props) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {Array(28)
+          {Array(hour[1] + 1)
             .fill(0)
             .map((_, i) => {
+              if (i < hour[0]) {
+                return null;
+              }
+
               return (
                 <TableRow key={i}>
                   <TableCell
@@ -191,20 +171,16 @@ const Timetable = ({ timetable, selected, hovered }: Props) => {
                         padding: 0,
                       }}>
                       <Typography variant='body2'>
-                        {`${getStartTimeFromIndex(i).toLocaleTimeString('en-GB', {
-                          hour12: false, 
-                          hour: 'numeric', 
-                          minute: 'numeric',
-                        })} - ${getEndTimeFromIndex(i).toLocaleTimeString('en-GB', {
-                          hour12: false, 
-                          hour: 'numeric', 
-                          minute: 'numeric',
-                        })}`}
+                        {`${getHourString(getStartTimeFromIndex(i))} - ${getHourString(getEndTimeFromIndex(i))}`}
                       </Typography>
                     </Container>
                   </TableCell>
                   
-                  {weekdays.map((_, j) => {
+                  {daysName.map((_, j) => {
+                    if (!days[j]) {
+                      return null;
+                    }
+
                     return (
                       <TimeSlot key={`${i}-${j}`} data={data[i][j]} />
                     );

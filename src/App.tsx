@@ -8,18 +8,24 @@ const App = () => {
   const [timetable, setTimetable] = useState<Map<string, Course>>(new Map());
   const [selected, setSelected] = useState<string[]>([]);
   const [hovered, setHovered] = useState<string | null>(null);
+  const [hour, setHour] = useState<number[]>([0, 25]);
+  const [days, setDays] = useState<boolean[]>([true, true, true, true, true, true, true]);
 
   return (
     <Stack direction='row'>
-      <Timetable timetable={timetable} selected={selected} hovered={hovered} />
       <Selection
         timetable={timetable}
         selected={selected}
         hovered={hovered}
+        hour={hour}
+        days={days}
         setTimetable={setTimetable}
         setSelected={setSelected}
         setHovered={setHovered}
+        setHour={setHour}
+        setDays={setDays}
       />
+      <Timetable timetable={timetable} selected={selected} hovered={hovered} hour={hour} days={days} />
     </Stack>
   );
 };

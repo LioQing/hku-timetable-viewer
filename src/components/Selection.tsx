@@ -5,18 +5,26 @@ import Button from '@mui/material/Button';
 import Upload from './Upload';
 import CourseList from './CourseList';
 import IntroDialog from './IntroDialog';
+import TimetableOptions from './TimetableOptions';
 import Course from '../utils/Course';
 
 interface Props {
   timetable: Map<string, Course>;
   selected: string[];
   hovered: string | null;
+  hour: number[];
+  days: boolean[];
   setTimetable: (timetable: Map<string, Course>) => void;
   setSelected: (selected: string[]) => void;
   setHovered: (hovered: string | null) => void;
+  setHour: (hour: number[]) => void;
+  setDays: (days: boolean[]) => void;
 }
 
-const Selection = ({ timetable, selected, hovered, setTimetable, setSelected, setHovered }: Props) => {
+const Selection = ({
+  timetable, selected, hovered, hour, days,
+  setTimetable, setSelected, setHovered, setHour, setDays,
+}: Props) => {
   const [introOpen, setIntroOpen] = useState<boolean>(false);
   
   return (
@@ -26,8 +34,8 @@ const Selection = ({ timetable, selected, hovered, setTimetable, setSelected, se
       alignItems: 'center',
       justifyContent: 'center',
       height: '100%',
-      width: '320px',
-      minWidth: '320px',
+      width: '20rem',
+      minWidth: '20rem',
       margin: '10px',
       padding: '0px',
     }}>
@@ -39,6 +47,7 @@ const Selection = ({ timetable, selected, hovered, setTimetable, setSelected, se
         setSelected={setSelected}
         setHovered={setHovered}
       />
+      <TimetableOptions hour={hour} setHour={setHour} days={days} setDays={setDays} />
       <Button
         variant='outlined'
         onClick={(_) => setIntroOpen(true)}

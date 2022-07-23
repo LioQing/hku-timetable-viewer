@@ -3,6 +3,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Course from '../utils/Course';
+import { getHourString } from '../utils/TimeUtils';
 
 interface Props {
   open: boolean;
@@ -11,7 +12,7 @@ interface Props {
 }
 
 const Content = ({ course }: { course: Course }) => {
-  const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const daysName = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   return (
     <>
@@ -36,16 +37,16 @@ const Content = ({ course }: { course: Course }) => {
                 {' - '}
                 {time.endDate.toLocaleDateString('en-GB')}
                 {'; '}
-                {time.startTime.toLocaleTimeString('en-GB', { hour12: false, hour: 'numeric', minute: 'numeric' })}
+                {getHourString(time.startTime)}
                 {' - '}
-                {time.endTime.toLocaleTimeString('en-GB', { hour12: false, hour: 'numeric', minute: 'numeric' })}
+                {getHourString(time.endTime)}
                 {'; '}
                 {time.weekday
                   .map((day, index) => {
                     if (!day) {
                       return null;
                     }
-                    return weekdays[index];
+                    return daysName[index];
                   })
                   .filter(day => day !== null)
                   .join(', ')

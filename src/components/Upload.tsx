@@ -10,11 +10,11 @@ interface Props {
   setHovered: (hovered: string | null) => void;
 }
 
-const getWeekdays = (days: any): boolean[] => {
-  const weekdays = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+const getDaysBool = (days: any): boolean[] => {
+  const daysName = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
   const result: boolean[] = [];
-  for (const day of weekdays) {
+  for (const day of daysName) {
     result.push(day in days);
   }
 
@@ -49,7 +49,7 @@ const Upload = ({ setTimetable, setSelected, setHovered }: Props) => {
           endDate: new Date(data['END DATE']),
           startTime: new Date(`1970-01-01 ${data['START TIME']}`),
           endTime: new Date(`1970-01-01 ${data['END TIME']}`),
-          weekday: getWeekdays(data),
+          weekday: getDaysBool(data),
           venue: data['VENUE'],
         };
 
