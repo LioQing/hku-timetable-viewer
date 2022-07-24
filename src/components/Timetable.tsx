@@ -38,7 +38,7 @@ const processTimetable = (
   // selected
   for (const id of selected) {
     const maybeCourse = timetable.get(id);
-    if (maybeCourse === null) {
+    if (!maybeCourse) {
       console.error(`Course ${id} not found in timetable`);
       continue;
     }

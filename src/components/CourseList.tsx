@@ -1,62 +1,20 @@
 import {
-  DataGrid, GridColDef, GridToolbarContainer,
+  DataGrid, GridColDef,
   GridFilterModel, GridFilterOperator, GridFilterItem, GridCellParams
 } from '@mui/x-data-grid';
 import { useState, useMemo } from 'react';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import SearchIcon from '@mui/icons-material/Search';
 import InfoIcon from '@mui/icons-material/Info';
-import ToggleButton from '@mui/material/ToggleButton';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Course from '../utils/Course';
 import CourseInfo from './CourseInfo';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-
-interface CustomToolbarProps {
-  showSelected: boolean;
-  setShowSelected: (showSelected: boolean) => void;
-  setSearch: (search: string) => void;
-  sem: number;
-  setSem: (sem: number) => void;
-}
-
-const CustomToolbar = ({ showSelected, setShowSelected, setSearch, sem, setSem }: CustomToolbarProps) => {
-  return (
-    <GridToolbarContainer style={{ margin: '8px' }}>
-      <Box sx={{ display: 'flex', orientation: 'horizontal', alignItems: 'center' }}>
-        <ToggleButton
-          value='show selected'
-          selected={showSelected}
-          onChange={(_) => {
-            setShowSelected(!showSelected);
-          }}
-          style={{ marginBottom: '8px', padding: '5px 15px' }}>
-          <CheckCircleIcon fontSize='small' style={{ marginRight: '4px' }} />
-          <Typography variant='caption'>Selected only</Typography>
-        </ToggleButton>
-      </Box>
-      <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-        <SearchIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-        <TextField label='Search' variant='standard' onChange={(event: any) => setSearch(event.target.value)} />
-        <Select variant='standard' value={sem} label='Sem' onChange={(event: any) => setSem(event.target.value)}>
-          <MenuItem value={0}>Both</MenuItem>
-          <MenuItem value={1}>Sem 1</MenuItem>
-          <MenuItem value={2}>Sem 2</MenuItem>
-        </Select>
-      </Box>
-    </GridToolbarContainer>
-  );
-};
+import CourseListToolbar from './CourseListToolbar';
 
 interface Props {
   timetable: Map<string, Course>;
   selected: string[];
   hovered: string | null;
+  setTimetable: (timetable: Map<string, Course>) => void;
   setSelected: (selected: string[]) => void;
   setHovered: (hovered: string | null) => void;
 }
@@ -67,7 +25,7 @@ const operator: GridFilterOperator = {
     return (params: GridCellParams): boolean => {
       const course = filterItem.value.timetable.get(params.value);
 
-      const searchMatch = params.value.includes(filterItem.value.search);
+      const searchMatch = (params.value as string).toUpperCase().includes((filterItem.value.search as string).toUpperCase());
       const showSelected = filterItem.value.showSelected;
       const selectedMatch = filterItem.value.selected.includes(params.value);
       const semMatch = filterItem.value.sem === 0
@@ -78,7 +36,7 @@ const operator: GridFilterOperator = {
   },
 };
 
-const CourseList = ({ timetable, selected, hovered, setSelected, setHovered }: Props) => {
+const CourseList = ({ timetable, selected, hovered, setTimetable, setSelected, setHovered }: Props) => {
   const [info, setInfo] = useState<string | null>(null);
   const [showSelected, setShowSelected] = useState(false);
   const [search, setSearch] = useState('');
@@ -164,7 +122,7 @@ const CourseList = ({ timetable, selected, hovered, setSelected, setHovered }: P
           disableColumnFilter
           disableColumnSelector
           disableDensitySelector
-          components={{ Toolbar: CustomToolbar }}
+          components={{ Toolbar: CourseListToolbar }}
           componentsProps={{
             cell: {
               onMouseEnter: onRowMouseEnter,
@@ -176,6 +134,11 @@ const CourseList = ({ timetable, selected, hovered, setSelected, setHovered }: P
               setSearch: setSearch,
               sem: sem,
               setSem: setSem,
+              timetable: timetable,
+              selected: selected,
+              setTimetable: setTimetable,
+              setSelected: setSelected,
+              setHovered: setHovered,
             },
           }}
           rowHeight={28}
@@ -186,6 +149,7 @@ const CourseList = ({ timetable, selected, hovered, setSelected, setHovered }: P
           rowsPerPageOptions={[8]}
           onSelectionModelChange={onSelectionModelChange}
           filterModel={filterModel}
+          selectionModel={selected}
           sx={{
             '& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer': {
               display: 'none',

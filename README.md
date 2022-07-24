@@ -6,7 +6,11 @@
 ![size](https://img.shields.io/github/repo-size/LioQing/hku-timetable-viewer)
 
 Click the heading above to visit the web app.
-A web app to view and plan your timetable given the class timetable.
-Built in hurry, may have bugs and performance issues.
+
+This is a web app to view and plan your timetable given the class timetable.
+
+Built in hurry, may have bugs and performance issues, have few documentation and overall disorganized codes.
+
+To be honest, this is more like a quick prototype.
 
 ![screenshot](screenshot.png)

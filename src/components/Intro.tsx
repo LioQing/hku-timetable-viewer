@@ -9,17 +9,13 @@ const Intro = () => {
         This is a simple web app that allows you to view and plan your HKU timetable.
         <br />
         <br />
-        You can upload the class timetable in .xlsx format. The class timetables are
-        generally found in HKU Portal -&gt; Timetable -&gt; Class Timetable -&gt; Download Class Timetable (for XXXX-XX)
-        <br />
-        <br />
-        You can search for a course in the course list by its course code and/or class.
-        <br />
-        <br />
-        You can also see more detailed info by pressing the info button on the right of the course in the course list.
-        <br />
-        <br />
         When multiple courses have a conflicted time slot, you can hover over the time slot to see which courses are conflicted.
+        <br />
+        <br />
+        You can select the hour range and days you want to view in the timetable at panel below the course list.
+        <br />
+        <br />
+        Please report any bug, or provide feedback to me at the GitHub repo. The button below links to the repo page.
       </Typography>
       <Button
         href='https://github.com/LioQing/hku-timetable-viewer'

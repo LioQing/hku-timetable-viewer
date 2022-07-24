@@ -32,7 +32,7 @@ const Content = ({ course }: { course: Course }) => {
           <br />
           {course.times.map((time, i) => {
             return (
-              <Typography key={i} variant='body1'>
+              <Typography component={'span'} key={i} variant='body1'>
                 {time.startDate.toLocaleDateString('en-GB')}
                 {' - '}
                 {time.endDate.toLocaleDateString('en-GB')}

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Container from '@mui/material/Container';
 import HelpIcon from '@mui/icons-material/Help';
 import Button from '@mui/material/Button';
-import Upload from './Upload';
 import CourseList from './CourseList';
 import IntroDialog from './IntroDialog';
 import TimetableOptions from './TimetableOptions';
@@ -39,11 +38,11 @@ const Selection = ({
       margin: '10px',
       padding: '0px',
     }}>
-      <Upload setTimetable={setTimetable} setSelected={setSelected} setHovered={setHovered} />
       <CourseList
         timetable={timetable}
         selected={selected}
         hovered={hovered}
+        setTimetable={setTimetable}
         setSelected={setSelected}
         setHovered={setHovered}
       />
