@@ -20,7 +20,12 @@ const CourseListHelp = ({ open, onClose }: Props) => {
           <br />
           <br />
           The upload button is for uploading the class timetable in .xlsx format.
+          It assumes the first sheet is the timetable.
           Generally, the class timetables can be found in HKU Portal -&gt; Timetable -&gt; Class Timetable -&gt; Download Class Timetable (for XXXX-XX).
+          <br />
+          <br />
+          The uploaded .xlsx file can also contain selected courses.
+          It assumes the sheet for selected coureses to be named 'Selected Courses'.
           <br />
           <br />
           The download button is for downloading the class timetable in .xlsx format.

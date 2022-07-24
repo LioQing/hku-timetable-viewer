@@ -9,6 +9,10 @@ const Intro = () => {
         This is a simple web app that allows you to view and plan your HKU timetable.
         <br />
         <br />
+        Start by uploading the class timetables in .xlsx format.
+        Press the help button on the course list to see more info.
+        <br />
+        <br />
         When multiple courses have a conflicted time slot, you can hover over the time slot to see which courses are conflicted.
         <br />
         <br />
