@@ -1,4 +1,3 @@
-
 const getStartTimeFromIndex = (index: number): Date => {
   return addHours(
     new Date('01/01/1970 08:30'),
@@ -44,10 +43,13 @@ const getHourString = (date: Date): string => {
   });
 };
 
+const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
 export {
   getStartTimeFromIndex,
   getEndTimeFromIndex,
   getIndexFromStartTime,
   getIndexFromEndTime,
   getHourString,
+  dayNames,
 };
