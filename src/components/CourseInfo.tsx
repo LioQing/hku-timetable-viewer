@@ -51,6 +51,9 @@ const Content = ({ course }: { course: Course }) => {
                   .filter(day => day !== null)
                   .join(', ')
                 }
+                {'; '}
+                {time.venue}
+                <br />
               </Typography>
             );
           })}
