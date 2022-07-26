@@ -1,48 +1,34 @@
-import { useState } from 'react';
-import IconButton from '@mui/material/IconButton';
-import Container from '@mui/material/Container';
+import { useState, useContext } from 'react';
 import * as XLSX from 'xlsx';
 import * as FileSave from 'file-saver';
-import Course from '../utils/Course';
+import IconButton from '@mui/material/IconButton';
+import Container from '@mui/material/Container';
 import CourseTime from '../utils/CourseTime';
 import UploadIcon from '@mui/icons-material/Upload';
 import DownloadIcon from '@mui/icons-material/Download';
 import HelpIcon from '@mui/icons-material/Help';
 import CourseListHelp from './CourseListHelp';
+import Course from '../utils/Course';
+import TabOptions from '../utils/TabOptions';
+import { Timetable, TimetableContext } from '../context/TimetableContext';
 
-interface Props {
-  timetable: Map<string, Course>;
-  selected: string[];
-  setTimetable: (timetable: Map<string, Course>) => void;
-  setSelected: (selected: string[]) => void;
-  setHovered: (hovered: string | null) => void;
-}
-
-const getDaysBool = (days: any): boolean[] => {
-  const daysName = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
-
-  const result: boolean[] = [];
-  for (const day of daysName) {
-    result.push(day in days);
-  }
-
-  return result;
-}
-
-const DownloadUpload = ({ timetable, selected, setTimetable, setSelected, setHovered }: Props) => {
+const DownloadUpload = () => {
+  const { timetable, setTimetable } = useContext(TimetableContext);
   const [helpOpen, setHelpOpen] = useState<boolean>(false);
   const [workbook, setWorkbook] = useState(XLSX.utils.book_new());
 
   const onFileUploaded = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // set states
-    setSelected([]);
-    setHovered(null);
+    var newTimetable: Timetable = {
+      ...timetable,
+      selected: new Map([['untitled', []]]),
+      tabOptions: new Map([['untitled', new TabOptions(1)]]),
+      currTab: 'untitled',
+      hovered: null,
+    };
 
     const file = event.target?.files?.[0];
 
-    if (!file) {
-      return;
-    }
+    if (!file) return;
 
     const reader = new FileReader();
     reader.readAsArrayBuffer(file);
@@ -57,45 +43,46 @@ const DownloadUpload = ({ timetable, selected, setTimetable, setSelected, setHov
       const selectedSheetIndex = wb.SheetNames.indexOf('Selected Courses');
       if (selectedSheetIndex !== -1) {
         const selectedSheet = wb.Sheets[wb.SheetNames[selectedSheetIndex]];
-        const selectedCourse = XLSX.utils.sheet_to_csv(selectedSheet).split('\n');
-        setSelected(selectedCourse);
+        const selectedAoa = XLSX.utils
+          .sheet_to_csv(selectedSheet)
+          .split('\n')
+          .map((row) => row.split(','));
+        
+        if (selectedAoa[0][0] !== 'Tab Name') {
+          newTimetable.selected = new Map([['untitled', selectedAoa.flat()]]);
+          newTimetable.currTab = 'untitled';
+        } else {
+          // process selected
+          const newSelected: [string, string[]][] = selectedAoa.slice(1).map((row) => {
+            return [row[0], row.slice(2).filter(x => x !== '')];
+          });
+          newTimetable.selected = new Map(newSelected);
+
+          // process tabs
+          const newTabOptions: [string, TabOptions][] = selectedAoa.slice(1).map((row) => {
+            return [row[0], TabOptions.fromString(row[1])];
+          });
+          newTimetable.tabOptions = new Map(newTabOptions);
+          newTimetable.currTab = newSelected[0][0];
+        }
       }
       
       // json to courses
-      var timetable: Map<string, Course> = new Map();
+      var courses: Map<string, Course> = new Map();
       for (const row of json) {
         const data = row as any;
 
         const key: string = `${data['COURSE CODE']}-${data['CLASS SECTION']}`;
-        const time: CourseTime = {
-          startDate: new Date(data['START DATE']),
-          endDate: new Date(data['END DATE']),
-          startTime: new Date(`1970-01-01 ${data['START TIME']}`),
-          endTime: new Date(`1970-01-01 ${data['END TIME']}`),
-          weekday: getDaysBool(data),
-          venue: data['VENUE'],
-        };
+        const time = CourseTime.fromData(data);
 
-        if (timetable.has(key)) {
-          const course = timetable.get(key);
-          course?.times.push(time);
+        if (courses.has(key)) {
+          courses.get(key)?.times.push(time);
         } else {
-          const course: Course = {
-            term: data['TERM'],
-            acadCareer: data['ACAD_CAREER'],
-            courseCode: data['COURSE CODE'],
-            classSection: data['CLASS SECTION'],
-            times: [time],
-            courseTitle: data['COURSE TITLE'],
-            offerDept: data['OFFER DEPT'],
-            instructor: data['INSTRUCTOR'],
-          };
-
-          timetable.set(key, course);
+          courses.set(key, Course.fromData(data));
         }
       }
 
-      setTimetable(timetable);
+      setTimetable({ ...newTimetable, courses });
       setWorkbook(wb);
     };
   };
@@ -105,8 +92,15 @@ const DownloadUpload = ({ timetable, selected, setTimetable, setSelected, setHov
     var wb = workbook;
     if (!wb.SheetNames.includes('Selected Courses')) {
       wb.SheetNames.push('Selected Courses');
-    }
-    wb.Sheets['Selected Courses'] = XLSX.utils.aoa_to_sheet(selected.map(c => [c]));
+    } 
+
+    wb.Sheets['Selected Courses'] = XLSX.utils.aoa_to_sheet(
+      [['Tab Name', 'Options', 'Courses']].concat(Array.from(timetable.selected.keys()).map((key) => {
+        return [key]
+          .concat((timetable.tabOptions.get(key) as TabOptions).toParseString())
+          .concat(timetable.selected.get(key) as string[]);
+      }))
+    );
 
     // download
     const out = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });

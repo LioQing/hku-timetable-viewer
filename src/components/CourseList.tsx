@@ -2,46 +2,55 @@ import {
   DataGrid, GridColDef,
   GridFilterModel, GridFilterOperator, GridFilterItem, GridCellParams
 } from '@mui/x-data-grid';
-import { useState, useMemo } from 'react';
-import Paper from '@mui/material/Paper';
+
+import { useMemo, useState, useContext } from 'react';
 import IconButton from '@mui/material/IconButton';
 import InfoIcon from '@mui/icons-material/Info';
-import Course from '../utils/Course';
-import CourseInfo from './CourseInfo';
+import Panel from './Panel';
 import CourseListToolbar from './CourseListToolbar';
+import CourseInfo from './CourseInfo';
+import CourseListFilters from '../utils/CourseListFilters';
+import Course from '../utils/Course';
+import TabOptions from '../utils/TabOptions';
+import { TimetableContext } from '../context/TimetableContext';
 
-interface Props {
-  timetable: Map<string, Course>;
-  selected: string[];
-  hovered: string | null;
-  setTimetable: (timetable: Map<string, Course>) => void;
-  setSelected: (selected: string[]) => void;
-  setHovered: (hovered: string | null) => void;
-}
-
-const operator: GridFilterOperator = {
-  value: 'courseFilter',
-  getApplyFilterFn: (filterItem: GridFilterItem) => {
-    return (params: GridCellParams): boolean => {
-      const course = filterItem.value.timetable.get(params.value);
-
-      const searchMatch = (params.value as string).toUpperCase().includes((filterItem.value.search as string).toUpperCase());
-      const showSelected = filterItem.value.showSelected;
-      const selectedMatch = filterItem.value.selected.includes(params.value);
-      const semMatch = filterItem.value.sem === 0
-        || (course ? course.term.includes(`Sem ${filterItem.value.sem}`) : false);
-
-      return semMatch && searchMatch && (!showSelected || (showSelected && selectedMatch));
-    };
-  },
-};
-
-const CourseList = ({ timetable, selected, hovered, setTimetable, setSelected, setHovered }: Props) => {
+const CourseList = () => {
   const [info, setInfo] = useState<string | null>(null);
-  const [showSelected, setShowSelected] = useState(false);
-  const [search, setSearch] = useState('');
-  const [sem, setSem] = useState(1);
+  const [filters, setFilters] = useState(new CourseListFilters(false, ''));
+  const { timetable, setTimetable } = useContext(TimetableContext);
 
+  // filter operator
+
+  const operator: GridFilterOperator = {
+    value: 'courseFilter',
+    getApplyFilterFn: (filterItem: GridFilterItem) => {
+      return (params: GridCellParams): boolean => {
+        const { timetable, filters } = filterItem.value;
+
+        const value = params.value as string;
+
+        // unknow cause of bug, when currTab is removed
+        // there will be a frame where the currTab is the removed tab
+        // while the tab has already been removed from selected and tabOptions
+        if (!timetable.selected.has(timetable.currTab)) {
+          return true;
+        }
+
+        const searchMatch = value.toUpperCase().includes(filters.search.toUpperCase());
+        const showSelected = filters.showSelected;
+
+        const course = timetable.courses.get(value) as Course;
+        const opt = timetable.tabOptions.get(timetable.currTab) as TabOptions;
+        const selectedMatch = timetable.selected.get(timetable.currTab).includes(value);
+        const semMatch = opt.sem === 0 || (course ? course.term.includes(`Sem ${opt.sem}`) : false);
+
+        return semMatch && searchMatch && (!showSelected || (showSelected && selectedMatch));
+      };
+    },
+  };
+
+  // data
+  
   const columns: GridColDef[] = [
     {
       field: 'course',
@@ -71,51 +80,53 @@ const CourseList = ({ timetable, selected, hovered, setTimetable, setSelected, s
     },
   ];
 
-  const rows = Array
-    .from(timetable)
-    .map(([no, course]) => {
-      return ({
-        id: no,
-        course: `${course.courseCode}-${course.classSection}`,
-      });
+  const rows = Array.from(timetable.courses.keys()).map(key => {
+    return ({
+      id: key,
+      course: key,
     });
+  });
 
-  const onSelectionModelChange = (selected: any) => {
-    setSelected(selected);
-  };
+  // hovers
 
   const onRowMouseEnter = (event: any) => {
-    const no = (event.target as HTMLElement).innerText;
-    if (!no) {
-      return;
-    }
+    const key = (event.target as HTMLElement).innerText;
+    if (!key) return;
 
-    setHovered(no);
+    setTimetable({ ...timetable, hovered: key });
   };
 
-  const onRowMouseLeave = (_: any) => {
-    setHovered(null);
+  const onRowMouseLeave = () => {
+    setTimetable({ ...timetable, hovered: null });
   };
 
+  // models
+  
+  const onSelectionModelChange = (newSelected: any) => {
+    setTimetable({
+      ...timetable,
+      selected: timetable.selected.set(timetable.currTab, newSelected)
+    });
+  };
+  
   const filterModel = useMemo(() => {
     return {
       items: [{
         columnField: 'course',
         operatorValue: 'courseFilter',
         value: {
-          timetable: timetable,
-          selected: selected,
-          showSelected: showSelected,
-          search: search,
-          sem: sem,
+          timetable,
+          filters,
         },
       } as GridFilterItem],
     } as GridFilterModel;
-  }, [timetable, selected, showSelected, search, sem]);
+  }, [timetable, filters]);
+
+  // returns
 
   return (
     <>
-      <Paper elevation={3} style={{ padding: 0, width: '100%' }}>
+      <Panel style={{ width: '100%' }}>
         <DataGrid
           autoHeight
           checkboxSelection
@@ -129,39 +140,27 @@ const CourseList = ({ timetable, selected, hovered, setTimetable, setSelected, s
               onMouseLeave: onRowMouseLeave,
             },
             toolbar: {
-              showSelected: showSelected,
-              setShowSelected: setShowSelected,
-              setSearch: setSearch,
-              sem: sem,
-              setSem: setSem,
-              timetable: timetable,
-              selected: selected,
-              setTimetable: setTimetable,
-              setSelected: setSelected,
-              setHovered: setHovered,
+              filters,
+              setFilters,
             },
           }}
+          headerHeight={32}
           rowHeight={28}
           rows={rows}
-          headerHeight={32}
           columns={columns}
           pageSize={8}
           rowsPerPageOptions={[8]}
-          onSelectionModelChange={onSelectionModelChange}
           filterModel={filterModel}
-          selectionModel={selected}
+          selectionModel={timetable.selected.get(timetable.currTab) as string[]}
+          onSelectionModelChange={onSelectionModelChange}
           sx={{
             '& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer': {
               display: 'none',
             }
           }}
         />
-      </Paper>
-      <CourseInfo
-        course={info === null ? undefined : timetable.get(info as string)}
-        open={info !== null}
-        onClose={() => setInfo(null)}
-      />
+      </Panel>
+      <CourseInfo info={info} setInfo={setInfo} />
     </>
   );
 };
