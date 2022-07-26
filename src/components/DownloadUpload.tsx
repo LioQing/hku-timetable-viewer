@@ -54,7 +54,7 @@ const DownloadUpload = () => {
         } else {
           // process selected
           const newSelected: [string, string[]][] = selectedAoa.slice(1).map((row) => {
-            return [row[0], row.slice(2)];
+            return [row[0], row.slice(2).filter(x => x !== '')];
           });
           newTimetable.selected = new Map(newSelected);
 

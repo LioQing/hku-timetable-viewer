@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import { GridToolbarContainer } from '@mui/x-data-grid';
 import ToggleButton from '@mui/material/ToggleButton';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -20,7 +20,9 @@ interface Props {
 
 const CourseListToolbar = ({ filters, setFilters }: Props) => {
   const { timetable, setTimetable } = useContext(TimetableContext); 
-  const opt = timetable.tabOptions.get(timetable.currTab) as TabOptions;
+  const opt = useMemo(() => {
+    return timetable.tabOptions.get(timetable.currTab) as TabOptions;
+  }, [timetable]);
 
   return (
     <GridToolbarContainer style={{ margin: '0.6rem' }}>

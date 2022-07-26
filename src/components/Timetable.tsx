@@ -7,6 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import TimeSlot from './TimeSlot';
+import TabView from './TabView';
 import TimeSlotData from '../utils/TimeSlotData';
 import {
   getStartTimeFromIndex, getEndTimeFromIndex,
@@ -23,6 +24,7 @@ const Timetable = () => {
 
   return (
     <Box style={{ padding: '10px' }}>
+      <TabView />
       <Table>
         <TableHead>
           <TableRow>

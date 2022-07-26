@@ -7,13 +7,14 @@ interface Props {
   open: boolean;
   onClose: () => void;
   children?: React.ReactNode;
+  style?: React.CSSProperties;
 }
 
-const Prompt = ({ title, open, onClose, children }: Props) => {
+const Prompt = ({ title, open, onClose, children, style }: Props) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>{title}</DialogTitle>
-      <Container style={{ padding: '0px 24px 16px 24px' }}>
+      <Container style={{ ...style, padding: '0px 24px 16px 24px' }}>
         {children}
       </Container>
     </Dialog>

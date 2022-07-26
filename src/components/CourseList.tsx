@@ -28,11 +28,19 @@ const CourseList = () => {
         const { timetable, filters } = filterItem.value;
 
         const value = params.value as string;
-        const course = timetable.courses.get(value) as Course;
-        const opt = timetable.tabOptions.get(timetable.currTab) as TabOptions;
+
+        // unknow cause of bug, when currTab is removed
+        // there will be a frame where the currTab is the removed tab
+        // while the tab has already been removed from selected and tabOptions
+        if (!timetable.selected.has(timetable.currTab)) {
+          return true;
+        }
 
         const searchMatch = value.toUpperCase().includes(filters.search.toUpperCase());
         const showSelected = filters.showSelected;
+
+        const course = timetable.courses.get(value) as Course;
+        const opt = timetable.tabOptions.get(timetable.currTab) as TabOptions;
         const selectedMatch = timetable.selected.get(timetable.currTab).includes(value);
         const semMatch = opt.sem === 0 || (course ? course.term.includes(`Sem ${opt.sem}`) : false);
 
