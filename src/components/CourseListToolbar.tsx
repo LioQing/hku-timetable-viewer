@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { GridToolbarContainer } from '@mui/x-data-grid';
 import ToggleButton from '@mui/material/ToggleButton';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -9,6 +10,8 @@ import Box from '@mui/material/Box';
 import SearchIcon from '@mui/icons-material/Search';
 import DownloadUpload from './DownloadUpload';
 import CourseListFilters from '../utils/CourseListFilters';
+import TabOptions from '../utils/TabOptions';
+import { TimetableContext } from '../context/TimetableContext';
 
 interface Props {
   filters: CourseListFilters;
@@ -16,6 +19,9 @@ interface Props {
 }
 
 const CourseListToolbar = ({ filters, setFilters }: Props) => {
+  const { timetable, setTimetable } = useContext(TimetableContext); 
+  const opt = timetable.tabOptions.get(timetable.currTab) as TabOptions;
+
   return (
     <GridToolbarContainer style={{ margin: '0.6rem' }}>
       <Box sx={{
@@ -44,9 +50,15 @@ const CourseListToolbar = ({ filters, setFilters }: Props) => {
         {/* sem dropdown menu */}
         <Select
           variant='standard'
-          value={filters.sem}
+          value={opt.sem}
           label='Sem'
-          onChange={(event) => setFilters({ ...filters, sem: event.target.value as number })}>
+          onChange={(event) => setTimetable({
+            ...timetable,
+            tabOptions: timetable.tabOptions.set(
+              timetable.currTab,
+              TabOptions.fromObject({ ...opt, sem: event.target.value as number }),
+            ),
+          })}>
           <MenuItem value={0}>Both</MenuItem>
           <MenuItem value={1}>Sem 1</MenuItem>
           <MenuItem value={2}>Sem 2</MenuItem>

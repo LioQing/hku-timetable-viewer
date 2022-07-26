@@ -10,11 +10,13 @@ import Panel from './Panel';
 import CourseListToolbar from './CourseListToolbar';
 import CourseInfo from './CourseInfo';
 import CourseListFilters from '../utils/CourseListFilters';
+import Course from '../utils/Course';
+import TabOptions from '../utils/TabOptions';
 import { TimetableContext } from '../context/TimetableContext';
 
 const CourseList = () => {
   const [info, setInfo] = useState<string | null>(null);
-  const [filters, setFilters] = useState(new CourseListFilters(1, false, ''));
+  const [filters, setFilters] = useState(new CourseListFilters(false, ''));
   const { timetable, setTimetable } = useContext(TimetableContext);
 
   // filter operator
@@ -26,12 +28,13 @@ const CourseList = () => {
         const { timetable, filters } = filterItem.value;
 
         const value = params.value as string;
-        const course = timetable.courses.get(value);
+        const course = timetable.courses.get(value) as Course;
+        const opt = timetable.tabOptions.get(timetable.currTab) as TabOptions;
 
         const searchMatch = value.toUpperCase().includes(filters.search.toUpperCase());
         const showSelected = filters.showSelected;
         const selectedMatch = timetable.selected.get(timetable.currTab).includes(value);
-        const semMatch = filters.sem === 0 || (course ? course.term.includes(`Sem ${filters.sem}`) : false);
+        const semMatch = opt.sem === 0 || (course ? course.term.includes(`Sem ${opt.sem}`) : false);
 
         return semMatch && searchMatch && (!showSelected || (showSelected && selectedMatch));
       };

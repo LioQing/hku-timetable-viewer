@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Timetable, TimetableContext } from '../context/TimetableContext';
+import TabOptions from '../utils/TabOptions';
 
 interface Props {
   children?: React.ReactNode;
@@ -9,6 +10,7 @@ const TimetableProvider = ({ children }: Props) => {
   const [timetable, setTimetable] = useState<Timetable>({
     courses: new Map(),
     selected: new Map([['untitled', []]]),
+    tabOptions: new Map([['untitled', new TabOptions(1)]]),
     currTab: 'untitled',
     hovered: null,
     hour: [0, 23],

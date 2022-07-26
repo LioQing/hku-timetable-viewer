@@ -9,6 +9,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import HelpIcon from '@mui/icons-material/Help';
 import CourseListHelp from './CourseListHelp';
 import Course from '../utils/Course';
+import TabOptions from '../utils/TabOptions';
 import { Timetable, TimetableContext } from '../context/TimetableContext';
 
 const DownloadUpload = () => {
@@ -20,6 +21,7 @@ const DownloadUpload = () => {
     var newTimetable: Timetable = {
       ...timetable,
       selected: new Map([['untitled', []]]),
+      tabOptions: new Map([['untitled', new TabOptions(1)]]),
       currTab: 'untitled',
       hovered: null,
     };
@@ -50,10 +52,17 @@ const DownloadUpload = () => {
           newTimetable.selected = new Map([['untitled', selectedAoa.flat()]]);
           newTimetable.currTab = 'untitled';
         } else {
+          // process selected
           const newSelected: [string, string[]][] = selectedAoa.slice(1).map((row) => {
-            return [row[0], row.slice(1)];
+            return [row[0], row.slice(2)];
           });
           newTimetable.selected = new Map(newSelected);
+
+          // process tabs
+          const newTabOptions: [string, TabOptions][] = selectedAoa.slice(1).map((row) => {
+            return [row[0], TabOptions.fromString(row[1])];
+          });
+          newTimetable.tabOptions = new Map(newTabOptions);
           newTimetable.currTab = newSelected[0][0];
         }
       }
@@ -83,11 +92,13 @@ const DownloadUpload = () => {
     var wb = workbook;
     if (!wb.SheetNames.includes('Selected Courses')) {
       wb.SheetNames.push('Selected Courses');
-    }
+    } 
 
     wb.Sheets['Selected Courses'] = XLSX.utils.aoa_to_sheet(
-      [['Tab Name', 'Courses']].concat(Array.from(timetable.selected).map(([key, value]) => {
-        return [key].concat(value);
+      [['Tab Name', 'Options', 'Courses']].concat(Array.from(timetable.selected.keys()).map((key) => {
+        return [key]
+          .concat((timetable.tabOptions.get(key) as TabOptions).toParseString())
+          .concat(timetable.selected.get(key) as string[]);
       }))
     );
 
