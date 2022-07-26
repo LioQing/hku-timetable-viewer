@@ -70,6 +70,9 @@ const ChangeTabName = ({ changeName, setChangeName }: Props) => {
         label='Tab Name'
         value={newName}
         onChange={event => setNewName(event.target.value)}
+        onKeyDown={event => {
+          if (event.key === 'Enter') confirmName();
+        }}
       />
       <IconButton
         onClick={confirmName}
