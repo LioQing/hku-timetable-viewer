@@ -1,5 +1,6 @@
 import Container from '@mui/material/Container';
 import CourseList from './CourseList';
+import TimetableOptions from './TimetableOptions';
 import Intro from './Intro';
 
 const Selection = () => {
@@ -16,6 +17,7 @@ const Selection = () => {
       padding: '0px',
     }}>
       <CourseList />
+      <TimetableOptions />
       <Intro />
     </Container>
   );

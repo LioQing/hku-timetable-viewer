@@ -8,7 +8,7 @@ interface Props {
 
 const Panel = ({ padding, children, style }: Props) => {
   return (
-    <Paper elevation={3} style={{ padding: padding ? '8px' : '0', ...style }}>
+    <Paper elevation={3} style={{ padding: padding ? '8px 16px' : '0', ...style }}>
       {children}
     </Paper>
   );

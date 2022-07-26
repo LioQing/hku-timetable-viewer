@@ -22,7 +22,7 @@ const Timetable = () => {
   }, [timetable]);
 
   return (
-    <Box style={{ overflow: 'auto', padding: '10px' }}>
+    <Box style={{ padding: '10px' }}>
       <Table>
         <TableHead>
           <TableRow>

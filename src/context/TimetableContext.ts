@@ -16,7 +16,7 @@ export const TimetableContext = createContext({
     selected: new Map<string, string[]>([['untitled', []]]),
     currTab: 'untitled',
     hovered: null,
-    hour: [0, 25],
+    hour: [0, 23],
     days: [true, true, true, true, true, true, true],
   } as Timetable,
   setTimetable: (timetable: Timetable) => {},

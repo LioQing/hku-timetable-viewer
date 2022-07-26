@@ -11,7 +11,7 @@ const TimetableProvider = ({ children }: Props) => {
     selected: new Map([['untitled', []]]),
     currTab: 'untitled',
     hovered: null,
-    hour: [0, 25],
+    hour: [0, 23],
     days: [true, true, true, true, true, true, true],
   });
 
