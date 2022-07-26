@@ -8,9 +8,11 @@ interface Props {
 const TimetableProvider = ({ children }: Props) => {
   const [timetable, setTimetable] = useState<Timetable>({
     courses: new Map(),
-    selected: [],
+    selected: new Map([['untitled', []]]),
     currTab: 'untitled',
     hovered: null,
+    hour: [0, 25],
+    days: [true, true, true, true, true, true, true],
   });
 
   return (

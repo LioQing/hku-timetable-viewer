@@ -30,7 +30,7 @@ const CourseList = () => {
 
         const searchMatch = value.toUpperCase().includes(filters.search.toUpperCase());
         const showSelected = filters.showSelected;
-        const selectedMatch = timetable.selected.includes(value);
+        const selectedMatch = timetable.selected.get(timetable.currTab).includes(value);
         const semMatch = filters.sem === 0 || (course ? course.term.includes(`Sem ${filters.sem}`) : false);
 
         return semMatch && searchMatch && (!showSelected || (showSelected && selectedMatch));
@@ -91,8 +91,11 @@ const CourseList = () => {
 
   // models
   
-  const onSelectionModelChange = (selected: any) => {
-    setTimetable({ ...timetable, selected });
+  const onSelectionModelChange = (newSelected: any) => {
+    setTimetable({
+      ...timetable,
+      selected: timetable.selected.set(timetable.currTab, newSelected)
+    });
   };
   
   const filterModel = useMemo(() => {
@@ -137,7 +140,7 @@ const CourseList = () => {
           pageSize={8}
           rowsPerPageOptions={[8]}
           filterModel={filterModel}
-          selectionModel={timetable.selected}
+          selectionModel={timetable.selected.get(timetable.currTab) as string[]}
           onSelectionModelChange={onSelectionModelChange}
           sx={{
             '& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer': {

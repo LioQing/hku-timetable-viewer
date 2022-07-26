@@ -19,7 +19,8 @@ const DownloadUpload = () => {
   const onFileUploaded = (event: React.ChangeEvent<HTMLInputElement>) => {
     var newTimetable: Timetable = {
       ...timetable,
-      selected: [],
+      selected: new Map([['untitled', []]]),
+      currTab: 'untitled',
       hovered: null,
     };
 
@@ -40,7 +41,21 @@ const DownloadUpload = () => {
       const selectedSheetIndex = wb.SheetNames.indexOf('Selected Courses');
       if (selectedSheetIndex !== -1) {
         const selectedSheet = wb.Sheets[wb.SheetNames[selectedSheetIndex]];
-        newTimetable.selected = XLSX.utils.sheet_to_csv(selectedSheet).split('\n');
+        const selectedAoa = XLSX.utils
+          .sheet_to_csv(selectedSheet)
+          .split('\n')
+          .map((row) => row.split(','));
+        
+        if (selectedAoa[0][0] !== 'Tab Name') {
+          newTimetable.selected = new Map([['untitled', selectedAoa.flat()]]);
+          newTimetable.currTab = 'untitled';
+        } else {
+          const newSelected: [string, string[]][] = selectedAoa.slice(1).map((row) => {
+            return [row[0], row.slice(1)];
+          });
+          newTimetable.selected = new Map(newSelected);
+          newTimetable.currTab = newSelected[0][0];
+        }
       }
       
       // json to courses
@@ -69,7 +84,12 @@ const DownloadUpload = () => {
     if (!wb.SheetNames.includes('Selected Courses')) {
       wb.SheetNames.push('Selected Courses');
     }
-    wb.Sheets['Selected Courses'] = XLSX.utils.aoa_to_sheet(timetable.selected.map(c => [c]));
+
+    wb.Sheets['Selected Courses'] = XLSX.utils.aoa_to_sheet(
+      [['Tab Name', 'Courses']].concat(Array.from(timetable.selected).map(([key, value]) => {
+        return [key].concat(value);
+      }))
+    );
 
     // download
     const out = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });

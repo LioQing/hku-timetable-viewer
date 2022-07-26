@@ -20,7 +20,7 @@ const CourseListToolbar = ({ filters, setFilters }: Props) => {
     <GridToolbarContainer style={{ margin: '0.6rem' }}>
       <Box sx={{
         display: 'flex', flexDirection: 'row', alignItems: 'center',
-        marginBottom: '8px', justifyContent: 'space-between', width: '100%',
+        justifyContent: 'space-between', width: '100%',
         }}>
         {/* selected only button */}
         <ToggleButton
