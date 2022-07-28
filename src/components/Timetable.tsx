@@ -9,10 +9,7 @@ import Typography from '@mui/material/Typography';
 import TimeSlot from './TimeSlot';
 import TabView from './TabView';
 import TimeSlotData from '../utils/TimeSlotData';
-import {
-  getStartTimeFromIndex, getEndTimeFromIndex,
-  getHourString, dayNames,
-} from '../utils/TimeUtils';
+import { getHourRangeStringFromIndex, dayNames } from '../utils/TimeUtils';
 import { TimetableContext } from '../context/TimetableContext';
 
 const Timetable = () => {
@@ -65,14 +62,14 @@ const Timetable = () => {
                       width: '6rem',
                     }}>
                       <Typography variant='body2'>
-                        {`${getHourString(getStartTimeFromIndex(i))} - ${getHourString(getEndTimeFromIndex(i))}`}
+                        {getHourRangeStringFromIndex(i)}
                       </Typography>
                     </Box>
                   </TableCell>
 
                   {dayNames.map((_, j) => {
                     if (!timetable.days[j]) return null;
-                    return (<TimeSlot key={`${i}-${j}`} data={data[i][j]} />);
+                    return (<TimeSlot key={`${i}-${j}`} day={j} timeIndex={i} data={data[i][j]} />);
                   })}
                 </TableRow>
               );

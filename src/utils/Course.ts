@@ -24,6 +24,19 @@ class Course {
     this.instructor = instructor;
   }
 
+  static fromObject(obj: any): Course {
+    return new Course(
+      obj.term,
+      obj.acadCareer,
+      obj.courseCode,
+      obj.classSection,
+      obj.times.map(CourseTime.fromObject),
+      obj.courseTitle,
+      obj.offerDept,
+      obj.instructor,
+    );
+  }
+
   static fromData(data: any): Course {
     return new Course(
       data['TERM'],

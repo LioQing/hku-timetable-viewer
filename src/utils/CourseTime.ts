@@ -18,6 +18,17 @@ class CourseTime {
     this.venue = venue;
   }
 
+  static fromObject(obj: any): CourseTime {
+    return new CourseTime(
+      obj.startDate,
+      obj.endDate,
+      obj.startTime,
+      obj.endTime,
+      obj.weekday,
+      obj.venue,
+    );
+  }
+
   static fromData(data: any): CourseTime {
     return new CourseTime(
       new Date(data['START DATE']),

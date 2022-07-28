@@ -10,7 +10,7 @@ const TimetableProvider = ({ children }: Props) => {
   const [timetable, setTimetable] = useState<Timetable>({
     courses: new Map(),
     selected: new Map([['untitled', []]]),
-    tabOptions: new Map([['untitled', new TabOptions(1)]]),
+    tabOptions: new Map([['untitled', new TabOptions(1, new Map())]]),
     currTab: 'untitled',
     hovered: null,
     hour: [0, 23],

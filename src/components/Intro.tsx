@@ -31,8 +31,19 @@ const Intro = () => {
           Double click the tab to rename.
           <br />
           <br />
-          <strong>Conflicted Courses</strong><br />
-          When multiple courses have a conflicted time slot, you can hover over the time slot to see which courses are conflicted.
+          <strong>Time Slots</strong><br />
+          When there is no conflict, the time slot will show as green.
+          When there are overlapped courses but don't conflict (such as same day of the week but not the same dates on calendar), it will show the number of overlapped courses.
+          When there are conflicts, it will show the number of conflicts.
+          <br />
+          <br />
+          <strong>Time Slot Details</strong><br />
+          You can click on the time slot when it has selected courses.
+          It will show you the courses in that time slot, and the conflicts if any.
+          <br />
+          <br />
+          <strong>Hiding Specific Courses' Time</strong><br />
+          You can hide specific time slot from a courses by going into the info tab and toggling the hide button.
           <br />
           <br />
           <strong>Options</strong><br />

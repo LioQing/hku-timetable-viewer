@@ -103,8 +103,30 @@ const CourseList = () => {
   // models
   
   const onSelectionModelChange = (newSelected: any) => {
+    // reset hidden course times
+    const currSelected = timetable.selected.get(timetable.currTab)!;
+    
+    const removed = currSelected.filter(course => !newSelected.includes(course));
+    const added: string[] = newSelected.filter((course: string) => !currSelected.includes(course));
+
+    const currTabOpt = timetable.tabOptions.get(timetable.currTab)!;
+
+    const newTabOpt = TabOptions.fromObject({
+      ...currTabOpt,
+      selectedHidden: new Map(Array.from(currTabOpt.selectedHidden)
+        .filter(([course, _]) => !removed.includes(course))
+        .concat(added
+          .map((course: string): [string, boolean[]] => [
+            course,
+            Array(timetable.courses.get(course)!.times.length).fill(false),
+          ])
+        )
+      ),
+    });
+
     setTimetable({
       ...timetable,
+      tabOptions: timetable.tabOptions.set(timetable.currTab, newTabOpt),
       selected: timetable.selected.set(timetable.currTab, newSelected)
     });
   };

@@ -16,7 +16,7 @@ export const TimetableContext = createContext({
   timetable: {
     courses: new Map<string, Course>(),
     selected: new Map<string, string[]>([['untitled', []]]),
-    tabOptions: new Map<string, TabOptions>([['untitled', new TabOptions(1)]]),
+    tabOptions: new Map<string, TabOptions>([['untitled', new TabOptions(1, new Map())]]),
     currTab: 'untitled',
     hovered: null,
     hour: [0, 23],

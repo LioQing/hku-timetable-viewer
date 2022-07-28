@@ -33,7 +33,7 @@ const TabView = () => {
     setTimetable({
       ...timetable,
       selected: timetable.selected.set(name, []),
-      tabOptions: timetable.tabOptions.set(name, new TabOptions(1)),
+      tabOptions: timetable.tabOptions.set(name, new TabOptions(1, new Map())),
       currTab: name,
     });
   };

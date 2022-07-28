@@ -1,15 +1,21 @@
 import { Timetable } from '../context/TimetableContext';
-import Course from './Course';
 import { getIndexFromStartTime, getIndexFromEndTime } from './TimeUtils';
+
+const areDateRangesOverlapped = (a_start: Date, a_end: Date, b_start: Date, b_end: Date) => {
+  if (a_start <= b_start && b_start <= a_end) return true;
+  if (a_start <= b_end   && b_end   <= a_end) return true;
+  if (b_start <  a_start && a_end   <  b_end) return true;
+  return false;
+};
 
 class TimeSlotData {
   selected: string | null;
-  conflicted: string[] | null;
+  overlapped: Map<string, string[]> | null; // key: course id, value: conflicted course id
   hovered: boolean;
 
-  constructor(selected: string | null, conflicted: string[] | null, hovered: boolean) {
+  constructor(selected: string | null, overlapped: Map<string, string[]> | null, hovered: boolean) {
     this.selected = selected;
-    this.conflicted = conflicted;
+    this.overlapped = overlapped;
     this.hovered = hovered;
   }
 
@@ -22,6 +28,8 @@ class TimeSlotData {
       }
     }
 
+    const currTabOpt = timetable.tabOptions.get(timetable.currTab)!;
+
     // selected
     for (const id of timetable.selected.get(timetable.currTab) as string[]) {
       const maybeCourse = timetable.courses.get(id);
@@ -30,8 +38,10 @@ class TimeSlotData {
         continue;
       }
 
-      const course = maybeCourse as Course;
-      for (const courseTime of course.times) {
+      const course = maybeCourse!;
+      for (const [courseTimeIndex, courseTime] of course.times.entries()) {
+        if (currTabOpt.selectedHidden.get(id)![courseTimeIndex]) continue;
+
         for (const [dayIndex, day] of courseTime.weekday.entries()) {
           if (!day || dayIndex >= data[0].length || dayIndex < 0) {
             continue;
@@ -46,19 +56,42 @@ class TimeSlotData {
             }
 
             var datum = data[i][dayIndex];
+
+            // selected or overlapped
             if (datum.selected === null) {
               datum.selected = id;
             } else if (
-              datum.selected as string !== id
+              datum.selected! !== id
               && (
-                datum.conflicted === null
-                || !(datum.conflicted as string[]).includes(id)
+                datum.overlapped === null
+                || !Array.from(datum.overlapped.keys()).includes(id)
                 )
             ) {
-              if (datum.conflicted === null) {
-                datum.conflicted = [datum.selected as string, id];
-              } else {
-                datum.conflicted.push(id);
+              // initialize overlapped if not initialized
+              if (datum.overlapped === null) {
+                datum.overlapped = new Map([[datum.selected, []]]);
+              }
+              
+              // add id to overlapped
+              datum.overlapped.set(id, []);
+            }
+
+            // check conflict with other overlapped courses with this course
+            if (!datum.overlapped) continue;
+
+            for (const [otherId, otherConflict] of datum.overlapped as Map<string, string[]>) {
+              if (otherId === id) continue;
+
+              for (const [otherCourseTimeIndex, otherCourseTime] of timetable.courses.get(otherId)!.times.entries()) {
+                if (currTabOpt.selectedHidden.get(id)![otherCourseTimeIndex]) continue;
+
+                if (!otherConflict.includes(id) && areDateRangesOverlapped(
+                  otherCourseTime.startDate, otherCourseTime.endDate,
+                  courseTime.startDate, courseTime.endDate,
+                )) {
+                  otherConflict.push(id);
+                  datum.overlapped.get(id)!.push(otherId);
+                }
               }
             }
           }
@@ -74,7 +107,7 @@ class TimeSlotData {
         return data;
       }
 
-      const course = maybeCourse as Course;
+      const course = maybeCourse!;
       for (const courseTime of course.times) {
         for (const [dayIndex, day] of courseTime.weekday.entries()) {
           if (!day || dayIndex >= data[0].length || dayIndex < 0) continue;

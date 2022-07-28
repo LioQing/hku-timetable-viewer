@@ -43,6 +43,10 @@ const getHourString = (date: Date): string => {
   });
 };
 
+const getHourRangeStringFromIndex = (i: number): string => {
+  return `${getHourString(getStartTimeFromIndex(i))} - ${getHourString(getEndTimeFromIndex(i))}`;
+};
+
 const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export {
@@ -51,5 +55,6 @@ export {
   getIndexFromStartTime,
   getIndexFromEndTime,
   getHourString,
+  getHourRangeStringFromIndex,
   dayNames,
 };

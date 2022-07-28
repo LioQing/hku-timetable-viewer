@@ -12,6 +12,12 @@ import Course from '../utils/Course';
 import TabOptions from '../utils/TabOptions';
 import { Timetable, TimetableContext } from '../context/TimetableContext';
 
+interface JsonInfo {
+  'Tab Name': string;
+  'Options': string;
+  'Courses': string[];
+}
+
 const DownloadUpload = () => {
   const { timetable, setTimetable } = useContext(TimetableContext);
   const [helpOpen, setHelpOpen] = useState<boolean>(false);
@@ -21,7 +27,7 @@ const DownloadUpload = () => {
     var newTimetable: Timetable = {
       ...timetable,
       selected: new Map([['untitled', []]]),
-      tabOptions: new Map([['untitled', new TabOptions(1)]]),
+      tabOptions: new Map([['untitled', new TabOptions(1, new Map())]]),
       currTab: 'untitled',
       hovered: null,
     };
@@ -39,34 +45,6 @@ const DownloadUpload = () => {
       const sheet = wb.Sheets[wb.SheetNames[0]];
       const json = XLSX.utils.sheet_to_json(sheet);
 
-      // find selected course if any
-      const selectedSheetIndex = wb.SheetNames.indexOf('Selected Courses');
-      if (selectedSheetIndex !== -1) {
-        const selectedSheet = wb.Sheets[wb.SheetNames[selectedSheetIndex]];
-        const selectedAoa = XLSX.utils
-          .sheet_to_csv(selectedSheet)
-          .split('\n')
-          .map((row) => row.split(','));
-        
-        if (selectedAoa[0][0] !== 'Tab Name') {
-          newTimetable.selected = new Map([['untitled', selectedAoa.flat()]]);
-          newTimetable.currTab = 'untitled';
-        } else {
-          // process selected
-          const newSelected: [string, string[]][] = selectedAoa.slice(1).map((row) => {
-            return [row[0], row.slice(2).filter(x => x !== '')];
-          });
-          newTimetable.selected = new Map(newSelected);
-
-          // process tabs
-          const newTabOptions: [string, TabOptions][] = selectedAoa.slice(1).map((row) => {
-            return [row[0], TabOptions.fromString(row[1])];
-          });
-          newTimetable.tabOptions = new Map(newTabOptions);
-          newTimetable.currTab = newSelected[0][0];
-        }
-      }
-      
       // json to courses
       var courses: Map<string, Course> = new Map();
       for (const row of json) {
@@ -82,6 +60,58 @@ const DownloadUpload = () => {
         }
       }
 
+      // find selected course if any
+      const selectedSheetIndex = wb.SheetNames.indexOf('Selected Courses');
+      if (selectedSheetIndex !== -1) {
+        const selectedSheet = wb.Sheets[wb.SheetNames[selectedSheetIndex]];
+        const selectedAoa = XLSX.utils
+          .sheet_to_csv(selectedSheet)
+          .split('\n')
+          .map((row) => row.split(','));
+
+        const selectedJson: JsonInfo[] = XLSX.utils
+          .sheet_to_json<any>(selectedSheet)
+          .map((row): JsonInfo => {
+            return {
+              'Tab Name': row['Tab Name'],
+              'Options': row['Options'],
+              'Courses': Object.entries(row)
+                .filter(([key]) => key !== 'Tab Name' && key !== 'Options')
+                .map(([key, value]) => (typeof value === 'string' ? value : null)!),
+              };
+            });
+
+        if (selectedAoa[0][0] !== 'Tab Name') {
+          newTimetable.selected = new Map([['untitled', selectedAoa.flat()]]);
+          newTimetable.currTab = 'untitled';
+        } else {
+          // process selected
+          const newSelected: [string, string[]][] = selectedJson
+            .map((json) => [json['Tab Name'], json['Courses']]);
+          newTimetable.selected = new Map(newSelected);
+
+          // process tabs
+          const newTabOptions: [string, TabOptions][] = selectedJson
+            .map((opt) => {
+              if (['0', '1', '2'].includes(opt['Options'])) {
+                return [
+                  opt['Tab Name'],
+                  new TabOptions(
+                    parseInt(opt['Options']),
+                    TabOptions.falseHiddenAllFromSelected(new Map(Array.from(newTimetable.selected.get(opt['Tab Name'])!)
+                      .map((selected): [string, Course] => [selected, courses.get(selected)!])
+                    ))
+                  ),
+                ];
+              }
+
+              return [opt['Tab Name'], TabOptions.fromJson(opt['Options'])];
+            });
+          newTimetable.tabOptions = new Map(newTabOptions);
+          newTimetable.currTab = newSelected[0][0];
+        }
+      }
+
       setTimetable({ ...newTimetable, courses });
       setWorkbook(wb);
     };
@@ -92,19 +122,19 @@ const DownloadUpload = () => {
     var wb = workbook;
     if (!wb.SheetNames.includes('Selected Courses')) {
       wb.SheetNames.push('Selected Courses');
-    } 
+    }
 
     wb.Sheets['Selected Courses'] = XLSX.utils.aoa_to_sheet(
       [['Tab Name', 'Options', 'Courses']].concat(Array.from(timetable.selected.keys()).map((key) => {
         return [key]
-          .concat((timetable.tabOptions.get(key) as TabOptions).toParseString())
-          .concat(timetable.selected.get(key) as string[]);
+          .concat((timetable.tabOptions.get(key)!).toJson())
+          .concat(timetable.selected.get(key)!);
       }))
     );
 
     // download
     const out = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
-    const s2ab = (s: any) => { 
+    const s2ab = (s: any) => {
       var buf = new ArrayBuffer(s.length);
       var view = new Uint8Array(buf);
       for (var i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
@@ -119,7 +149,7 @@ const DownloadUpload = () => {
     <Container style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', padding: 0 }}>
       <IconButton
         component='label'
-        onClick={() => { 
+        onClick={() => {
           ((document.getElementById('timetable-upload') as HTMLInputElement).value as any) = null;
         }}
         style={{ margin: '0.4rem 0px', padding: '0.4rem' }}>
