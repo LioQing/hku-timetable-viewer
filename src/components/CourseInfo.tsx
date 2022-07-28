@@ -48,7 +48,7 @@ const CourseInfo = ({ info, setInfo }: Props) => {
             <ToggleButton
               value='hide button'
               color='primary'
-              selected={isHidden[i]}
+              selected={isHidden ? isHidden[i] : false}
               disabled={!timetable.selected.get(timetable.currTab)!.includes(info)}
               onChange={() => {
                 setTimetable({
