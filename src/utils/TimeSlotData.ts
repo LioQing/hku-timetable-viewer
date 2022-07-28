@@ -85,7 +85,16 @@ class TimeSlotData {
               for (const [otherCourseTimeIndex, otherCourseTime] of timetable.courses.get(otherId)!.times.entries()) {
                 if (currTabOpt.selectedHidden.get(id)![otherCourseTimeIndex]) continue;
 
-                if (!otherConflict.includes(id) && areDateRangesOverlapped(
+                if (!otherCourseTime.weekday[dayIndex]) continue;
+
+                const otherStartIndex = getIndexFromStartTime(otherCourseTime.startTime);
+                const otherEndIndex = getIndexFromEndTime(otherCourseTime.endTime);
+
+                if (!(otherStartIndex <= i && i <= otherEndIndex)) continue;
+
+                if (otherConflict.includes(id)) continue;
+
+                if (areDateRangesOverlapped(
                   otherCourseTime.startDate, otherCourseTime.endDate,
                   courseTime.startDate, courseTime.endDate,
                 )) {
