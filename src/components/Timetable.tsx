@@ -69,7 +69,7 @@ const Timetable = () => {
 
                   {dayNames.map((_, j) => {
                     if (!timetable.days[j]) return null;
-                    return (<TimeSlot key={`${i}-${j}`} day={j} timeIndex={i} data={data[i][j]} />);
+                    return (<TimeSlot key={`${i}-${j}`} day={j} timeIndex={i} data={data} y={i} x={j} />);
                   })}
                 </TableRow>
               );

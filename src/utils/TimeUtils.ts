@@ -43,8 +43,8 @@ const getHourString = (date: Date): string => {
   });
 };
 
-const getHourRangeStringFromIndex = (i: number): string => {
-  return `${getHourString(getStartTimeFromIndex(i))} - ${getHourString(getEndTimeFromIndex(i))}`;
+const getHourRangeStringFromIndex = (i: number, span?: number): string => {
+  return `${getHourString(getStartTimeFromIndex(i))} - ${getHourString(getEndTimeFromIndex(i + (span ? span : 0)))}`;
 };
 
 const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
