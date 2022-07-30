@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useMemo, useState, useContext } from 'react';
 import TableCell from '@mui/material/TableCell';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
@@ -50,7 +50,7 @@ interface Props {
 const TimeSlot = ({ day, timeIndex, data, y, x }: Props) => {
   const { timetable } = useContext(TimetableContext);
   const [detailOpen, setDetailOpen] = useState(false);
-  const currData = data[y][x];
+  const currData = useMemo(() => data[y][x], [data, y, x]);
 
   if (
     !(
@@ -102,7 +102,7 @@ const TimeSlot = ({ day, timeIndex, data, y, x }: Props) => {
         <Button
           onClick={() => setDetailOpen(true)}
           sx={{ textTransform: 'none' }}
-          style={{ padding: 0, height: '100%' }}
+          style={{ padding: 0, height: '100%', top: rowSpan === 1 ? '-0.04rem' : '0' }} // hack to fix rowSpan offset bug
           disabled={currData.selected === null && currData.overlapped === null}>
           <Paper
             elevation={3}

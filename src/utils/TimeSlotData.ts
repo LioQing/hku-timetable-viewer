@@ -110,7 +110,7 @@ class TimeSlotData {
 
     // hovered
     if (timetable.hovered !== null) {
-      const maybeCourse = timetable.courses.get(timetable.hovered);
+      const maybeCourse = timetable.courses.get(timetable.hovered.trim());
       if (maybeCourse === undefined) {
         console.error(`Course ${timetable.hovered} not found in timetable`);
         return data;

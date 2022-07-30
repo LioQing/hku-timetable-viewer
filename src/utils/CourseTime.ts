@@ -33,8 +33,8 @@ class CourseTime {
     return new CourseTime(
       new Date(data['START DATE']),
       new Date(data['END DATE']),
-      new Date(`1970-01-01 ${data['START TIME']}`),
-      new Date(`1970-01-01 ${data['END TIME']}`),
+      new Date(`1970-01-01T${data['START TIME']}`),
+      new Date(`1970-01-01T${data['END TIME']}`),
       CourseTime.getDayBoolArray(data),
       data['VENUE'],
     );
