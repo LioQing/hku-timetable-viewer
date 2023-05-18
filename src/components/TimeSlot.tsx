@@ -1,7 +1,8 @@
 import { useMemo, useState, useContext } from 'react';
+import { useTheme } from '@mui/material/styles';
 import TableCell from '@mui/material/TableCell';
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
+import ButtonBase from '@mui/material/ButtonBase';
 import Typography from '@mui/material/Typography';
 import Prompt from './Prompt';
 import TimeSlotData from '../utils/TimeSlotData';
@@ -48,6 +49,7 @@ interface Props {
 }
 
 const TimeSlot = ({ day, timeIndex, data, y, x }: Props) => {
+  const theme = useTheme();
   const { timetable } = useContext(TimetableContext);
   const [detailOpen, setDetailOpen] = useState(false);
   const currData = useMemo(() => data[y][x], [data, y, x]);
@@ -92,43 +94,48 @@ const TimeSlot = ({ day, timeIndex, data, y, x }: Props) => {
     return `${id}: ${timetable.courses.get(id)?.courseTitle}`;
   };
 
+  const paperHeight = (theme.typography.body2.lineHeight as number)
+    * parseFloat((theme.typography.body2.fontSize as string).slice(0, -3))
+    * rowSpan + 0.28 * (rowSpan - 1) + 'rem'
+
   return (
     <>
       <TableCell
         align='center'
         rowSpan={rowSpan}
         sx={{ borderBottom: 'none' }}
-        style={{ padding: '2px 4px', height: 0 }}>
-        <Button
-          onClick={() => setDetailOpen(true)}
-          sx={{ textTransform: 'none' }}
-          style={{ padding: 0, height: '100%', top: rowSpan === 1 ? '-0.04rem' : '0' }} // hack to fix rowSpan offset bug
-          disabled={currData.selected === null && currData.overlapped === null}>
-          <Paper
-            elevation={3}
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '100%',
-              minWidth: '7.4rem',
-              overflow: 'hidden',
-              backgroundColor: 
-                !isTimeSlotConflicted ?
-                  (currData.selected === null ?
-                    '#FFFFFF' : '#9CF783'
-                  ) : '#F78F83',
-              outline: currData.hovered ? '3px solid #F5B945' : 'none',
-            }}>
-            <Typography component='span' variant='caption'>
-              {!isTimeSlotConflicted ?
-                (currData.overlapped === null ?
-                  currData.selected : `<${currData.overlapped.size} overlapped>`
-                ) : `<${Array.from(currData.overlapped!.values()).filter(d => d.length > 0).length} conflicted>`
-              }
-            </Typography>
-          </Paper>
-        </Button>
+        style={{ padding: '0.14rem 4px', height: '100%' }}>
+        <Paper
+          elevation={3}
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: paperHeight,
+            minWidth: '7.4rem',
+            overflow: 'hidden',
+            backgroundColor: 
+              !isTimeSlotConflicted ?
+                (currData.selected === null ?
+                  '#FFFFFF' : '#9CF783'
+                ) : '#F78F83',
+            outline: currData.hovered ? '3px solid #F5B945' : 'none',
+          }}>
+          <ButtonBase
+            onClick={() => setDetailOpen(true)}
+            sx={{ textTransform: 'none' }}
+            style={{ padding: 0, width: '100%', height: '100%', top: rowSpan === 1 ? '-0.04rem' : '0' }} // hack to fix rowSpan offset bug
+            disabled={currData.selected === null && currData.overlapped === null}>
+              <Typography component='span' variant='caption'>
+                {!isTimeSlotConflicted ?
+                  (currData.overlapped === null ?
+                    currData.selected
+                      : `<${currData.overlapped.size} overlapped>`
+                  ) : `<${Array.from(currData.overlapped!.values()).filter(d => d.length > 0).length} conflicted>`
+                }
+              </Typography>
+          </ButtonBase>
+        </Paper>
       </TableCell>
       <Prompt
         title={`${getHourRangeStringFromIndex(timeIndex, rowSpan)} on ${dayNames[day]}`}

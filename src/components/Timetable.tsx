@@ -1,4 +1,5 @@
 import { useMemo, useContext } from 'react';
+import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -13,6 +14,7 @@ import { getHourRangeStringFromIndex, dayNames } from '../utils/TimeUtils';
 import { TimetableContext } from '../context/TimetableContext';
 
 const Timetable = () => {
+  const theme = useTheme();
   const { timetable } = useContext(TimetableContext);
 
   const data = useMemo(() => {
@@ -54,12 +56,14 @@ const Timetable = () => {
                   <TableCell
                     align='right'
                     sx={{ borderBottom: 'none' }}
-                    style={{ padding: '1px 8px' }}>
+                    style={{ padding: '0.14rem 8px' }}>
                     <Box style={{
                       display: 'flex',
                       justifyContent: 'flex-end',
                       alignItems: 'center',
                       width: '6rem',
+                      height: theme.typography.body2.lineHeight,
+                      padding: 0,
                     }}>
                       <Typography variant='body2'>
                         {getHourRangeStringFromIndex(i)}
