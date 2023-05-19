@@ -60,7 +60,7 @@ const TimeSlot = ({ day, timeIndex, data, y, x }: Props) => {
       && !currData.overlapped
       && !currData.hovered
     )
-    && y > 0
+    && y > timetable.hour[0]
     && data[y - 1][x].selected === currData.selected
     && compareMaps(data[y - 1][x].overlapped, currData.overlapped)
     && data[y - 1][x].hovered === currData.hovered
@@ -78,7 +78,7 @@ const TimeSlot = ({ day, timeIndex, data, y, x }: Props) => {
     if (!currData.overlapped && !currData.selected && !currData.hovered) return 1;
 
     var rowSpan = 0;
-    for (var i = y; i < data.length; i++) {
+    for (var i = y; i <= timetable.hour[1]; i++) {
       if (
         data[i][x].selected !== currData.selected
         || !compareMaps(data[i][x].overlapped, currData.overlapped)
