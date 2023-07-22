@@ -19,7 +19,7 @@ class TimeSlotData {
     this.hovered = hovered;
   }
 
-  static fromTimetable(timetable: Timetable): TimeSlotData[][] {
+  static Empty(): TimeSlotData[][] {
     var data: TimeSlotData[][] = [];
     for (let i = 0; i < 30; i++) {
       data.push([]);
@@ -27,7 +27,11 @@ class TimeSlotData {
         data[i].push(new TimeSlotData(null, null, false));
       }
     }
+    return data;
+  }
 
+  static fromTimetable(timetable: Timetable): TimeSlotData[][] {
+    var data = TimeSlotData.Empty();
     const currTabOpt = timetable.tabOptions.get(timetable.currTab)!;
 
     // selected
