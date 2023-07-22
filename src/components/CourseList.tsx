@@ -36,7 +36,13 @@ const CourseList = () => {
           return true;
         }
 
-        const searchMatch = value.toUpperCase().includes(filters.search.toUpperCase());
+        const searchMatch = (() => {
+          try {
+            return RegExp(filters.search, 'i').test(value);
+          } catch (e) {
+            return value.toUpperCase().includes(filters.search.toUpperCase());
+          }
+        })();
         const showSelected = filters.showSelected;
 
         const course = timetable.courses.get(value) as Course;

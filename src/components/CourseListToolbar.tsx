@@ -47,7 +47,7 @@ const CourseListToolbar = ({ filters, setFilters }: Props) => {
 
         {/* search field */}
         <SearchIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-        <TextField label='Search' variant='standard' onChange={(event) => setFilters({ ...filters, search: event.target.value})} />
+        <TextField label='Search (Regex)' variant='standard' onChange={(event) => setFilters({ ...filters, search: event.target.value})} />
 
         {/* sem dropdown menu */}
         <Select
