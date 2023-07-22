@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import SearchIcon from '@mui/icons-material/Search';
 import DownloadUpload from './DownloadUpload';
-import CourseListFilters from '../utils/CourseListFilters';
+import CourseListFilters, { SearchBy } from '../utils/CourseListFilters';
 import TabOptions from '../utils/TabOptions';
 import { TimetableContext } from '../context/TimetableContext';
 
@@ -37,7 +37,7 @@ const CourseListToolbar = ({ filters, setFilters }: Props) => {
           onChange={() => setFilters({ ...filters, showSelected: !filters.showSelected })}
           style={{ padding: '0.4rem 1rem', margin: '0.2rem' }}>
           <CheckCircleIcon fontSize='small' style={{ marginRight: '0.2rem' }} />
-          <Typography variant='caption' noWrap>Selected only</Typography>
+          <Typography variant='caption' noWrap style={{ position: 'relative', top: '0.1rem' }}>Selected only</Typography>
         </ToggleButton>
 
         {/* download upload buttons */}
@@ -65,6 +65,28 @@ const CourseListToolbar = ({ filters, setFilters }: Props) => {
           <MenuItem value={1}>Sem 1</MenuItem>
           <MenuItem value={2}>Sem 2</MenuItem>
         </Select>
+      </Box>
+      <Box sx={{ display: 'flex' }}>
+        {/* label */}
+        <Typography variant='subtitle1' alignSelf='center' noWrap>Search by:</Typography>
+
+        {/* search by course code button */}
+        <ToggleButton
+          value='course code'
+          selected={filters.searchBy === SearchBy.Code}
+          onChange={() => setFilters({ ...filters, searchBy: SearchBy.Code })}
+          style={{ padding: '0.4rem', margin: '0.4rem' }}>
+          <Typography variant='caption' noWrap style={{ position: 'relative', top: '0.1rem' }}>Code</Typography>
+        </ToggleButton>
+
+        {/* search by course title button */}
+        <ToggleButton
+          value='course title'
+          selected={filters.searchBy === SearchBy.Title}
+          onChange={() => setFilters({ ...filters, searchBy: SearchBy.Title })}
+          style={{ padding: '0.4rem', margin: '0.4rem' }}>
+          <Typography variant='caption' noWrap style={{ position: 'relative', top: '0.1rem' }}>Title</Typography>
+        </ToggleButton>
       </Box>
     </GridToolbarContainer>
   );

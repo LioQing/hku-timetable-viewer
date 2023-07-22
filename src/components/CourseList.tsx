@@ -5,18 +5,20 @@ import {
 
 import { useMemo, useState, useContext } from 'react';
 import IconButton from '@mui/material/IconButton';
+import Container from '@mui/material/Container';
 import InfoIcon from '@mui/icons-material/Info';
 import Panel from './Panel';
 import CourseListToolbar from './CourseListToolbar';
 import CourseInfo from './CourseInfo';
-import CourseListFilters from '../utils/CourseListFilters';
+import CourseListFilters, { SearchBy } from '../utils/CourseListFilters';
 import Course from '../utils/Course';
 import TabOptions from '../utils/TabOptions';
-import { TimetableContext } from '../context/TimetableContext';
+import { Timetable, TimetableContext } from '../context/TimetableContext';
+import { Typography } from '@mui/material';
 
 const CourseList = () => {
   const [info, setInfo] = useState<string | null>(null);
-  const [filters, setFilters] = useState(new CourseListFilters(false, ''));
+  const [filters, setFilters] = useState(new CourseListFilters(false, '', SearchBy.Code));
   const { timetable, setTimetable } = useContext(TimetableContext);
 
   // filter operator
@@ -25,9 +27,12 @@ const CourseList = () => {
     value: 'courseFilter',
     getApplyFilterFn: (filterItem: GridFilterItem) => {
       return (params: GridCellParams): boolean => {
-        const { timetable, filters } = filterItem.value;
+        interface FilterItemValue { timetable: Timetable, filters: CourseListFilters }
+        const { timetable, filters }: FilterItemValue = filterItem.value;
 
         const value = params.value as string;
+        const course = timetable.courses.get(value) as Course;
+        const courseTitle = course.courseTitle;
 
         // unknow cause of bug, when currTab is removed
         // there will be a frame where the currTab is the removed tab
@@ -36,21 +41,19 @@ const CourseList = () => {
           return true;
         }
 
-        const searchMatch = (() => {
-          try {
-            return RegExp(filters.search, 'i').test(value);
-          } catch (e) {
-            return value.toUpperCase().includes(filters.search.toUpperCase());
-          }
-        })();
-        const showSelected = filters.showSelected;
-
-        const course = timetable.courses.get(value) as Course;
         const opt = timetable.tabOptions.get(timetable.currTab) as TabOptions;
-        const selectedMatch = timetable.selected.get(timetable.currTab).includes(value);
-        const semMatch = opt.sem === 0 || (course ? course.term.includes(`Sem ${opt.sem}`) : false);
+        if (!(opt.sem === 0 || (course ? course.term.includes(`Sem ${opt.sem}`) : false))) {
+          return false;
+        }
 
-        return semMatch && searchMatch && (!showSelected || (showSelected && selectedMatch));
+        const showSelected = filters.showSelected;
+        const selectedMatch = timetable.selected.get(timetable.currTab)!.includes(value);
+
+        if (!(!showSelected || (showSelected && selectedMatch))) {
+          return false;
+        }
+
+        return true;
       };
     },
   };
@@ -61,9 +64,37 @@ const CourseList = () => {
     {
       field: 'course',
       headerName: 'Course',
-      width: 180,
+      flex: 1,
       disableColumnMenu: true,
       filterOperators: [operator],
+      renderCell: (params) => {
+        const maybeCourse = timetable.courses.get(params.id.toString());
+        if (!maybeCourse) {
+          console.error(`Course ${params.value} not found`);
+          return null;
+        }
+
+        const course = maybeCourse as Course;
+
+        return (
+          <Container
+            className='course-key'
+            id={params.id.toString()}
+            style={{
+              padding: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'start',
+            }}>
+            <Typography variant='body2' lineHeight={1}>
+              {params.id.toString()}
+            </Typography>
+            <Typography variant='caption' lineHeight={1}>
+              {course.courseTitle}
+            </Typography>
+          </Container>
+        );
+      }
     },
     {
       field: 'info',
@@ -79,24 +110,46 @@ const CourseList = () => {
   
         return (
           <IconButton onClick={onClick}>
-            <InfoIcon style={{ fontSize: '1.5rem' }} />
+            <InfoIcon className='course-key' id={params.id.toString()} style={{ fontSize: '1.5rem' }} />
           </IconButton>
         );
       }
     },
   ];
 
-  const rows = Array.from(timetable.courses.keys()).map(key => {
-    return ({
-      id: key,
-      course: key,
-    });
-  });
+  // for optimization
+  const rows = useMemo(() => {
+    const regexp = (() => {
+      try {
+        return RegExp(filters.search, 'i');
+      } catch (e) {
+        return null;
+      }
+    })();
+
+    return Array
+      .from(timetable.courses.entries())
+      .filter(([_, course]) => {
+        if (regexp) {
+          return (filters.searchBy === SearchBy.Code && regexp.test(course.courseCode))
+            || (filters.searchBy === SearchBy.Title && regexp.test(course.courseTitle));
+        } else {
+          return (filters.searchBy === SearchBy.Code && course.courseCode.includes(filters.search))
+            || (filters.searchBy === SearchBy.Title && course.courseTitle.includes(filters.search));
+        }
+      })
+      .map(([key, _]) => {
+        return ({
+          id: key,
+          course: key,
+        });
+      });
+  }, [filters.search, filters.searchBy, timetable.courses]);
 
   // hovers
 
-  const onRowMouseEnter = (event: any) => {
-    const key = (event.target as HTMLElement).innerText;
+  const onRowMouseEnter = (e: any) => {
+    const key = (e.target as HTMLElement).getElementsByClassName('course-key')[0]?.id;
     if (!key) return;
 
     setTimetable({ ...timetable, hovered: key });
@@ -173,7 +226,7 @@ const CourseList = () => {
             },
           }}
           headerHeight={32}
-          rowHeight={28}
+          rowHeight={36}
           rows={rows}
           columns={columns}
           pageSize={8}
