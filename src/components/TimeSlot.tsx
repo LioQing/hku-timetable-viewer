@@ -37,6 +37,10 @@ const TimeSlot = ({ day, timeIndex, currData, rowSpan }: Props) => {
     * parseFloat((theme.typography.body2.fontSize as string).slice(0, -3))
     * rowSpan + 0.28 * (rowSpan - 1) + 'rem'
 
+  const joinedOverlappedStr = currData.overlapped
+    ? [...currData.overlapped!.keys()].slice(0, rowSpan - 2).join(' \n ')
+    : '';
+
   return (
     <>
       <TableCell
@@ -65,12 +69,20 @@ const TimeSlot = ({ day, timeIndex, currData, rowSpan }: Props) => {
             sx={{ textTransform: 'none' }}
             style={{ padding: 0, width: '100%', height: '100%', top: rowSpan === 1 ? '-0.04rem' : '0' }} // hack to fix rowSpan offset bug
             disabled={currData.selected === null && currData.overlapped === null}>
-              <Typography component='span' variant='caption'>
+              <Typography component='span' variant='caption' style={{ whiteSpace: 'pre-line' }}>
                 {!isTimeSlotConflicted ?
                   (currData.overlapped === null ?
                     currData.selected
-                      : `<${currData.overlapped.size} overlapped>`
-                  ) : `<${Array.from(currData.overlapped!.values()).filter(d => d.length > 0).length} conflicted>`
+                      : `\
+                      <${currData.overlapped.size} overlapped> \n \
+                      ${joinedOverlappedStr} ${joinedOverlappedStr !== '' ? ' \n ' : ''} \
+                      •••\
+                      `
+                  ) : `\
+                  <${Array.from(currData.overlapped!.values()).filter(d => d.length > 0).length} conflicted> \n \
+                  ${joinedOverlappedStr} ${joinedOverlappedStr !== '' ? ' \n ' : ''} \
+                  •••\
+                  `
                 }
               </Typography>
           </ButtonBase>
