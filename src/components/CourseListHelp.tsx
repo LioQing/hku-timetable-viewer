@@ -14,6 +14,7 @@ const CourseListHelp = ({ open, onClose }: Props) => {
         The upload button is for uploading the class timetable in .xlsx format.
         It assumes the first sheet is the timetable.
         Generally, the class timetables can be found in HKU Portal -&gt; Timetable -&gt; Class Timetable -&gt; Download Class Timetable (for XXXX-XX).
+        Or click <a href='https://intraweb.hku.hk/reserved_1/sis_student/sis/SIS-class-timetable.html' target='_blank' rel='noreferrer'>here</a> to go to the page directly.
         <br />
         <br />
         The uploaded .xlsx file can also contain selected courses.
