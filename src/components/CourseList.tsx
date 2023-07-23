@@ -135,15 +135,12 @@ const CourseList = () => {
 
     return Array
       .from(timetable.courses.entries())
-      .filter(([_, course]) => {
-        if (regexp) {
-          return (filters.searchBy === SearchBy.Code && regexp.test(course.courseCode))
-            || (filters.searchBy === SearchBy.Title && regexp.test(course.courseTitle));
-        } else {
-          return (filters.searchBy === SearchBy.Code && course.courseCode.includes(filters.search))
-            || (filters.searchBy === SearchBy.Title && course.courseTitle.includes(filters.search));
-        }
-      })
+      .filter(([_, course]) => regexp
+        ? (filters.searchBy === SearchBy.Code && regexp.test(course.courseCode))
+            || (filters.searchBy === SearchBy.Title && regexp.test(course.courseTitle))
+        : (filters.searchBy === SearchBy.Code && course.courseCode.includes(filters.search))
+            || (filters.searchBy === SearchBy.Title && course.courseTitle.includes(filters.search))
+      )
       .map(([key, _]) => {
         return ({
           id: key,
@@ -170,8 +167,27 @@ const CourseList = () => {
   const onSelectionModelChange = (newSelected: any) => {
     // reset hidden course times
     const currSelected = timetable.selected.get(timetable.currTab)!;
-    
-    const removed = currSelected.filter(course => !newSelected.includes(course));
+
+    const regexp = (() => {
+      try {
+        return RegExp(filters.search, 'i');
+      } catch (e) {
+        return null;
+      }
+    })();
+
+    // do not remove filtered out selected
+    const filteredOutSelected = currSelected.filter(key => {
+      const course = timetable.courses.get(key)!;
+
+      return !(regexp
+        ? (filters.searchBy === SearchBy.Code && regexp.test(course.courseCode))
+          || (filters.searchBy === SearchBy.Title && regexp.test(course.courseTitle))
+        : (filters.searchBy === SearchBy.Code && course.courseCode.includes(filters.search))
+          || (filters.searchBy === SearchBy.Title && course.courseTitle.includes(filters.search)));
+    })
+
+    const removed = currSelected.filter(key => !newSelected.includes(key) && !filteredOutSelected.includes(key));
     const added: string[] = newSelected.filter((course: string) => !currSelected.includes(course));
 
     const currTabOpt = timetable.tabOptions.get(timetable.currTab)!;
@@ -189,10 +205,12 @@ const CourseList = () => {
       ),
     });
 
+    const newTableSelected = currSelected.filter(key => !removed.includes(key)).concat(added);
+
     setTimetable({
       ...timetable,
       tabOptions: timetable.tabOptions.set(timetable.currTab, newTabOpt),
-      selected: timetable.selected.set(timetable.currTab, newSelected)
+      selected: timetable.selected.set(timetable.currTab, newTableSelected),
     });
   };
   
@@ -238,7 +256,7 @@ const CourseList = () => {
           pageSize={8}
           rowsPerPageOptions={[8]}
           filterModel={filterModel}
-          selectionModel={timetable.selected.get(timetable.currTab) as string[]}
+          selectionModel={timetable.selected.get(timetable.currTab)}
           onSelectionModelChange={onSelectionModelChange}
           sx={{
             '& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer': {
