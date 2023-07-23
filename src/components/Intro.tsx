@@ -47,8 +47,14 @@ const Intro = () => {
         <Button
           href='https://github.com/LioQing/hku-timetable-viewer'
           variant='outlined'
-          style={{ marginTop: '16px' }}>
-          Source Code on GitHub
+          style={{ marginTop: '16px', marginRight: '8px' }}>
+          GitHub Repo
+        </Button>
+        <Button
+          href='https://github.com/LioQing/hku-timetable-viewer/blob/master/CHANGELOG.md'
+          variant='outlined'
+          style={{ marginTop: '16px', marginLeft: '8px' }}>
+          Changelog
         </Button>
       </Prompt>
     </>

@@ -10,6 +10,7 @@
 
 - 📅 Time slots with overlapping courses now try to show course codes in the table view.
 - 🔍 Search bar now supports searching course by title and regex.
+- 📝 Changelog button in the 'About This App' section.
 
 ### Changed
 
