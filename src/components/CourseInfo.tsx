@@ -28,7 +28,7 @@ const CourseInfo = ({ info, setInfo }: Props) => {
   const course = maybeCourse as Course;
 
   return (
-    <Prompt title='Course Info' open={info !== null} onClose={() => setInfo(null)}>
+    <Prompt title={`Course Info - ${course.courseCode} - ${course.classSection}`} open={info !== null} onClose={() => setInfo(null)}>
       <Typography variant='h4'>{course.courseTitle}</Typography>
       <Typography variant='body1'>
         Term: {course.term}

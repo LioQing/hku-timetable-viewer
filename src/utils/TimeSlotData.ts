@@ -1,5 +1,6 @@
 import { Timetable } from '../context/TimetableContext';
 import { getIndexFromStartTime, getIndexFromEndTime } from './TimeUtils';
+import Course from './Course';
 
 const areDateRangesOverlapped = (a_start: Date, a_end: Date, b_start: Date, b_end: Date) => {
   if (a_start <= b_start && b_start <= a_end) return true;
@@ -19,7 +20,7 @@ class TimeSlotData {
     this.hovered = hovered;
   }
 
-  static fromTimetable(timetable: Timetable): TimeSlotData[][] {
+  static Empty(): TimeSlotData[][] {
     var data: TimeSlotData[][] = [];
     for (let i = 0; i < 30; i++) {
       data.push([]);
@@ -27,18 +28,22 @@ class TimeSlotData {
         data[i].push(new TimeSlotData(null, null, false));
       }
     }
+    return data;
+  }
 
+  static fromTimetable(timetable: Timetable): TimeSlotData[][] {
+    var data = TimeSlotData.Empty();
     const currTabOpt = timetable.tabOptions.get(timetable.currTab)!;
 
     // selected
     for (const id of timetable.selected.get(timetable.currTab) as string[]) {
       const maybeCourse = timetable.courses.get(id);
-      if (!maybeCourse) {
+      if (maybeCourse === undefined) {
         console.error(`Course ${id} not found in timetable`);
         continue;
       }
 
-      const course = maybeCourse!;
+      const course = maybeCourse as Course;
       for (const [courseTimeIndex, courseTime] of course.times.entries()) {
         if (currTabOpt.selectedHidden.get(id)![courseTimeIndex]) continue;
 
