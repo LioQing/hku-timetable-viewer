@@ -3,6 +3,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import HelpIcon from '@mui/icons-material/Help';
 import Prompt from './Prompt';
+import packageJson from '../../package.json';
 
 const Intro = () => {
   const [open, setOpen] = useState(false);
@@ -14,9 +15,9 @@ const Intro = () => {
         onClick={(_) => setOpen(true)}
         startIcon={<HelpIcon />}
         style={{ margin: '8px' }}>
-        What is this website?
+        About This App
       </Button>
-      <Prompt title='HKU Timetable Viewer' open={open} onClose={() => setOpen(false)}>
+      <Prompt title={`HKU Timetable Viewer v${packageJson.version}`} open={open} onClose={() => setOpen(false)}>
         <Typography variant='body1'>
           This is a simple web app that allows you to view and plan your HKU timetable.
           <br />
@@ -32,22 +33,12 @@ const Intro = () => {
           <br />
           <br />
           <strong>Time Slots</strong><br />
-          When there is no conflict, the time slot will show as green.
-          When there are overlapped courses but don't conflict (such as same day of the week but not the same dates on calendar), it will show the number of overlapped courses.
-          When there are conflicts, it will show the number of conflicts.
+          Time slot will show whether the selected courses in the time is good, or overlapped, or conflicted.
           <br />
           <br />
           <strong>Time Slot Details</strong><br />
           You can click on the time slot when it has selected courses.
           It will show you the courses in that time slot, and the conflicts if any.
-          <br />
-          <br />
-          <strong>Hiding Specific Courses' Time</strong><br />
-          You can hide specific time slot from a courses by going into the info tab and toggling the hide button.
-          <br />
-          <br />
-          <strong>Options</strong><br />
-          You can select the hour range and days you want to view in the timetable at panel below the course list.
           <br />
           <br />
           <strong>Bugs and Feedbacks</strong><br />

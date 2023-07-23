@@ -31,8 +31,14 @@ const CourseList = () => {
         const { timetable, filters }: FilterItemValue = filterItem.value;
 
         const value = params.value as string;
-        const course = timetable.courses.get(value) as Course;
-        const courseTitle = course.courseTitle;
+        const maybeCourse = timetable.courses.get(value);
+
+        if (!maybeCourse) {
+          console.error(`Course ${value} not found`);
+          return false;
+        }
+
+        const course = maybeCourse as Course;
 
         // unknow cause of bug, when currTab is removed
         // there will be a frame where the currTab is the removed tab
