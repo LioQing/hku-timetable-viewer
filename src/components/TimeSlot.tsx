@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Prompt from './Prompt';
 import TimeSlotData from '../utils/TimeSlotData';
 import { getHourRangeStringFromIndex, dayNames } from '../utils/TimeUtils';
-import { TimetableContext } from '../context/TimetableContext';
+import { TimetableContext } from '../contexts/TimetableContext';
 
 interface Props {
   day: number;

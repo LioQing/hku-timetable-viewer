@@ -13,7 +13,7 @@ import CourseInfo from './CourseInfo';
 import CourseListFilters, { SearchBy } from '../utils/CourseListFilters';
 import Course from '../utils/Course';
 import TabOptions from '../utils/TabOptions';
-import { Timetable, TimetableContext } from '../context/TimetableContext';
+import { Timetable, TimetableContext } from '../contexts/TimetableContext';
 import { Typography } from '@mui/material';
 
 const CourseList = () => {
@@ -65,7 +65,7 @@ const CourseList = () => {
   };
 
   // data
-  
+
   const columns: GridColDef[] = [
     {
       field: 'course',
@@ -113,7 +113,7 @@ const CourseList = () => {
           event.stopPropagation();
           setInfo(params.id.toString());
         };
-  
+
         return (
           <IconButton onClick={onClick}>
             <InfoIcon className='course-key' id={params.id.toString()} style={{ fontSize: '1.5rem' }} />
@@ -137,9 +137,9 @@ const CourseList = () => {
       .from(timetable.courses.entries())
       .filter(([_, course]) => regexp
         ? (filters.searchBy === SearchBy.Code && regexp.test(course.courseCode))
-            || (filters.searchBy === SearchBy.Title && regexp.test(course.courseTitle))
+        || (filters.searchBy === SearchBy.Title && regexp.test(course.courseTitle))
         : (filters.searchBy === SearchBy.Code && course.courseCode.includes(filters.search))
-            || (filters.searchBy === SearchBy.Title && course.courseTitle.includes(filters.search))
+        || (filters.searchBy === SearchBy.Title && course.courseTitle.includes(filters.search))
       )
       .map(([key, _]) => {
         return ({
@@ -163,7 +163,7 @@ const CourseList = () => {
   };
 
   // models
-  
+
   const onSelectionModelChange = (newSelected: any) => {
     // reset hidden course times
     const currSelected = timetable.selected.get(timetable.currTab)!;
@@ -182,9 +182,9 @@ const CourseList = () => {
 
       return !(regexp
         ? (filters.searchBy === SearchBy.Code && regexp.test(course.courseCode))
-          || (filters.searchBy === SearchBy.Title && regexp.test(course.courseTitle))
+        || (filters.searchBy === SearchBy.Title && regexp.test(course.courseTitle))
         : (filters.searchBy === SearchBy.Code && course.courseCode.includes(filters.search))
-          || (filters.searchBy === SearchBy.Title && course.courseTitle.includes(filters.search)));
+        || (filters.searchBy === SearchBy.Title && course.courseTitle.includes(filters.search)));
     })
 
     const removed = currSelected.filter(key => !newSelected.includes(key) && !filteredOutSelected.includes(key));
@@ -213,7 +213,7 @@ const CourseList = () => {
       selected: timetable.selected.set(timetable.currTab, newTableSelected),
     });
   };
-  
+
   const filterModel = useMemo(() => {
     return {
       items: [{
@@ -261,7 +261,8 @@ const CourseList = () => {
           sx={{
             '& .MuiDataGrid-columnHeaderCheckbox .MuiDataGrid-columnHeaderTitleContainer': {
               display: 'none',
-            }
+            },
+            borderWidth: 0,
           }}
         />
       </Panel>

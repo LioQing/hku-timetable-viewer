@@ -1,6 +1,7 @@
 import { useContext, useMemo } from 'react';
 import { GridToolbarContainer } from '@mui/x-data-grid';
 import ToggleButton from '@mui/material/ToggleButton';
+import IconButton from '@mui/material/IconButton';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -8,10 +9,13 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import SearchIcon from '@mui/icons-material/Search';
+import DarkMode from '@mui/icons-material/DarkMode';
+import LightMode from '@mui/icons-material/LightMode';
 import DownloadUpload from './DownloadUpload';
 import CourseListFilters, { SearchBy } from '../utils/CourseListFilters';
 import TabOptions from '../utils/TabOptions';
-import { TimetableContext } from '../context/TimetableContext';
+import { TimetableContext } from '../contexts/TimetableContext';
+import { SettingsContext, ThemeMode } from '../contexts/SettingsContext';
 
 interface Props {
   filters: CourseListFilters;
@@ -19,7 +23,8 @@ interface Props {
 }
 
 const CourseListToolbar = ({ filters, setFilters }: Props) => {
-  const { timetable, setTimetable } = useContext(TimetableContext); 
+  const { timetable, setTimetable } = useContext(TimetableContext);
+  const { settings, setSettings } = useContext(SettingsContext);
   const opt = useMemo(() => {
     return timetable.tabOptions.get(timetable.currTab) as TabOptions;
   }, [timetable]);
@@ -29,25 +34,40 @@ const CourseListToolbar = ({ filters, setFilters }: Props) => {
       <Box sx={{
         display: 'flex', flexDirection: 'row', alignItems: 'center',
         justifyContent: 'space-between', width: '100%',
-        }}>
+      }}>
         {/* selected only button */}
         <ToggleButton
           value='selected only'
           selected={filters.showSelected}
           onChange={() => setFilters({ ...filters, showSelected: !filters.showSelected })}
-          style={{ padding: '0.4rem 1rem', margin: '0.2rem' }}>
+          style={{ padding: '0.4rem', margin: '0.2rem' }}>
           <CheckCircleIcon fontSize='small' style={{ marginRight: '0.2rem' }} />
           <Typography variant='caption' noWrap style={{ position: 'relative', top: '0.1rem' }}>Selected only</Typography>
         </ToggleButton>
 
         {/* download upload buttons */}
         <DownloadUpload />
+
+        {/* light/dark mode toggle button */}
+        <IconButton
+          component='label'
+          onClick={() => setSettings({
+            ...settings,
+            themeMode: settings.themeMode === ThemeMode.Dark ? ThemeMode.Light : ThemeMode.Dark,
+          })}
+          style={{ padding: '0.4rem', margin: '0.2rem' }}>
+          {settings.themeMode === 'dark' ? <LightMode /> : <DarkMode />}
+        </IconButton>
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
 
         {/* search field */}
         <SearchIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-        <TextField label='Search (Regex)' variant='standard' onChange={(event) => setFilters({ ...filters, search: event.target.value})} />
+        <TextField
+          label='Search (Regex)'
+          variant='standard'
+          onChange={(event) => setFilters({ ...filters, search: event.target.value })}
+        />
 
         {/* sem dropdown menu */}
         <Select

@@ -3,7 +3,7 @@ import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import CheckIcon from '@mui/icons-material/Check';
 import Prompt from './Prompt';
-import { TimetableContext } from '../context/TimetableContext';
+import { TimetableContext } from '../contexts/TimetableContext';
 
 const deleted = (map: Map<string, any>, key: string): Map<string, any> => {
   var newMap = map;
@@ -18,7 +18,7 @@ interface Props {
 
 const ChangeTabName = ({ changeName, setChangeName }: Props) => {
   const { timetable, setTimetable } = useContext(TimetableContext);
-  const [ newName, setNewName ] = useState<string>(changeName as string);
+  const [newName, setNewName] = useState<string>(changeName as string);
 
   useEffect(() => {
     if (changeName !== null) {

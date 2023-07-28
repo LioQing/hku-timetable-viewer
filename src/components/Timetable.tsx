@@ -12,7 +12,7 @@ import TabView from './TabView';
 import compareMaps from '../utils/compareMaps';
 import TimeSlotData from '../utils/TimeSlotData';
 import { getHourRangeStringFromIndex, dayNames } from '../utils/TimeUtils';
-import { TimetableContext } from '../context/TimetableContext';
+import { TimetableContext } from '../contexts/TimetableContext';
 
 interface MemoTimeSlotProps {
   rowSpan: number;

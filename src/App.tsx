@@ -3,17 +3,11 @@ import Stack from '@mui/material/Stack';
 import Selection from './components/Selection';
 import Timetable from './components/Timetable';
 import TimetableProvider from './components/TimetableProvider';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-
-const darkTheme = createTheme({
-  palette: {
-    // mode: 'dark',
-  },
-});
+import SettingsProvider from './components/SettingsProvider';
 
 const App = () => {
   return (
-    <ThemeProvider theme={darkTheme}>
+    <SettingsProvider>
       <CssBaseline />
       <TimetableProvider>
         <Stack direction='row'>
@@ -21,7 +15,7 @@ const App = () => {
           <Timetable />
         </Stack>
       </TimetableProvider>
-    </ThemeProvider>
+    </SettingsProvider>
   );
 };
 
