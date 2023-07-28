@@ -2,5 +2,5 @@
   "short_name": "HKU Timetable Viewer",
   "name": "HKU Timetable Viewer",
   "start_url": ".",
-  "display": "standalone",
+  "display": "standalone"
 }

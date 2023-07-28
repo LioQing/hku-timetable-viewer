@@ -72,8 +72,9 @@ const Timetable = () => {
         <TableBody>
           {Array(timetable.hour[1] + 1)
             .fill(0)
-            .filter((_, i) => i >= timetable.hour[0])
-            .map((_, i) => (
+            .map((_, i) => {
+              if (i < timetable.hour[0]) return null;
+              return (
                 <TableRow key={i}>
                   <TableCell
                     align='right'
@@ -111,10 +112,10 @@ const Timetable = () => {
                         && compareMaps(data[y - 1][x].overlapped, currData.overlapped)
                         && data[y - 1][x].hovered === currData.hovered
                       ) return null;
-                    
+
                       const rowSpan = ((): number => {
                         if (!currData.overlapped && !currData.selected && !currData.hovered) return 1;
-                    
+
                         var rowSpan = 0;
                         for (var i = y; i <= timetable.hour[1]; i++) {
                           if (
@@ -124,7 +125,7 @@ const Timetable = () => {
                           ) break;
                           rowSpan += 1;
                         }
-                    
+
                         return rowSpan;
                       })();
 
@@ -133,7 +134,8 @@ const Timetable = () => {
                     })
                   }
                 </TableRow>
-            ))
+              );
+            })
           }
         </TableBody>
       </Table>
