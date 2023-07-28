@@ -60,8 +60,9 @@ const TimeSlot = ({ day, timeIndex, currData, rowSpan }: Props) => {
             backgroundColor: 
               !isTimeSlotConflicted ?
                 (currData.selected === null ?
-                  '#FFFFFF' : '#9CF783'
+                  theme.palette.background.default : '#9CF783'
                 ) : '#F78F83',
+            color: theme.palette.mode === 'dark' ? 'black' : 'white',
             outline: currData.hovered ? '3px solid #F5B945' : 'none',
           }}>
           <ButtonBase
