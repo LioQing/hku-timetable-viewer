@@ -34,7 +34,6 @@ const CourseList = () => {
         const maybeCourse = timetable.courses.get(value);
 
         if (!maybeCourse) {
-          console.error(`Course ${value} not found`);
           return false;
         }
 

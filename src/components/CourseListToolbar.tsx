@@ -14,8 +14,9 @@ import LightMode from '@mui/icons-material/LightMode';
 import DownloadUpload from './DownloadUpload';
 import CourseListFilters, { SearchBy } from '../utils/CourseListFilters';
 import TabOptions from '../utils/TabOptions';
+import ThemeMode from '../utils/ThemeMode';
 import { TimetableContext } from '../contexts/TimetableContext';
-import { SettingsContext, ThemeMode } from '../contexts/SettingsContext';
+import { SettingsContext } from '../contexts/SettingsContext';
 
 interface Props {
   filters: CourseListFilters;

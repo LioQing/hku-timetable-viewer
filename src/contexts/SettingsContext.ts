@@ -1,9 +1,5 @@
 import { createContext } from 'react';
-
-export enum ThemeMode {
-  Light = 'light',
-  Dark = 'dark',
-}
+import ThemeMode from '../utils/ThemeMode';
 
 export interface Settings {
   themeMode: ThemeMode;

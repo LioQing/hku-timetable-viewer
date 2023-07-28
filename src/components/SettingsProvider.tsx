@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { createTheme } from '@mui/material/styles';
 import MuiThemeProvider from '@mui/material/styles/ThemeProvider';
-import { ThemeMode, Settings, SettingsContext } from '../contexts/SettingsContext';
+import { Settings, SettingsContext } from '../contexts/SettingsContext';
+import ThemeMode from '../utils/ThemeMode';
 
 interface Props {
   children?: React.ReactNode;
