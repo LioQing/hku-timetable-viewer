@@ -9,7 +9,7 @@
 
 ### Fixed
 
-- Fix a visual glitch when hour range's lower bound is changed.
+- 🕒 Fix a visual glitch when hour range's lower bound is changed.
 
 ## [0.2.0] - 2023-07-23
 
