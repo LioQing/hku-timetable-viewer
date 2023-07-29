@@ -10,7 +10,7 @@ import HelpIcon from '@mui/icons-material/Help';
 import CourseListHelp from './CourseListHelp';
 import Course from '../utils/Course';
 import TabOptions from '../utils/TabOptions';
-import { Timetable, TimetableContext } from '../context/TimetableContext';
+import { Timetable, TimetableContext } from '../contexts/TimetableContext';
 
 interface JsonInfo {
   'Tab Name': string;
@@ -66,8 +66,8 @@ const LoadWorkbook = (buff: ArrayBuffer, timetable: Timetable) => {
           'Courses': Object.entries(row)
             .filter(([key]) => key !== 'Tab Name' && key !== 'Options')
             .map(([key, value]) => (typeof value === 'string' ? value : null)!),
-          };
-        });
+        };
+      });
 
     if (selectedAoa[0][0] !== 'Tab Name') {
       newTimetable.selected = new Map([['untitled', selectedAoa.flat()]]);
@@ -100,7 +100,7 @@ const LoadWorkbook = (buff: ArrayBuffer, timetable: Timetable) => {
     }
   }
 
-  return {wb, newTimetable, courses};
+  return { wb, newTimetable, courses };
 }
 
 const DownloadUpload = () => {
@@ -117,7 +117,7 @@ const DownloadUpload = () => {
     reader.readAsArrayBuffer(file);
     reader.onload = () => {
 
-      const {wb, newTimetable, courses} = LoadWorkbook(reader.result as ArrayBuffer, timetable);
+      const { wb, newTimetable, courses } = LoadWorkbook(reader.result as ArrayBuffer, timetable);
 
       setTimetable({ ...newTimetable, courses });
       setWorkbook(wb);

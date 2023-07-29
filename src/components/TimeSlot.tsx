@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Prompt from './Prompt';
 import TimeSlotData from '../utils/TimeSlotData';
 import { getHourRangeStringFromIndex, dayNames } from '../utils/TimeUtils';
-import { TimetableContext } from '../context/TimetableContext';
+import { TimetableContext } from '../contexts/TimetableContext';
 
 interface Props {
   day: number;
@@ -57,11 +57,12 @@ const TimeSlot = ({ day, timeIndex, currData, rowSpan }: Props) => {
             height: paperHeight,
             minWidth: '7.4rem',
             overflow: 'hidden',
-            backgroundColor: 
+            backgroundColor:
               !isTimeSlotConflicted ?
                 (currData.selected === null ?
-                  '#FFFFFF' : '#9CF783'
+                  theme.palette.background.default : '#9CF783'
                 ) : '#F78F83',
+            color: 'black',
             outline: currData.hovered ? '3px solid #F5B945' : 'none',
           }}>
           <ButtonBase
@@ -69,22 +70,22 @@ const TimeSlot = ({ day, timeIndex, currData, rowSpan }: Props) => {
             sx={{ textTransform: 'none' }}
             style={{ padding: 0, width: '100%', height: '100%', top: rowSpan === 1 ? '-0.04rem' : '0' }} // hack to fix rowSpan offset bug
             disabled={currData.selected === null && currData.overlapped === null}>
-              <Typography component='span' variant='caption' style={{ whiteSpace: 'pre-line' }}>
-                {!isTimeSlotConflicted ?
-                  (currData.overlapped === null ?
-                    currData.selected
-                      : `\
+            <Typography component='span' variant='caption' style={{ whiteSpace: 'pre-line' }}>
+              {!isTimeSlotConflicted ?
+                (currData.overlapped === null ?
+                  currData.selected
+                  : `\
                       <${currData.overlapped.size} overlapped> \n \
                       ${joinedOverlappedStr} ${joinedOverlappedStr !== '' ? ' \n ' : ''} \
                       •••\
                       `
-                  ) : `\
+                ) : `\
                   <${Array.from(currData.overlapped!.values()).filter(d => d.length > 0).length} conflicted> \n \
                   ${joinedOverlappedStr} ${joinedOverlappedStr !== '' ? ' \n ' : ''} \
                   •••\
                   `
-                }
-              </Typography>
+              }
+            </Typography>
           </ButtonBase>
         </Paper>
       </TableCell>

@@ -9,7 +9,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Panel from './Panel';
 import ChangeTabName from './ChangeTabName';
 import TabOptions from '../utils/TabOptions';
-import { TimetableContext } from '../context/TimetableContext';
+import { TimetableContext } from '../contexts/TimetableContext';
 
 const deleted = (map: Map<string, any>, key: string): Map<string, any> => {
   var newMap = map;
@@ -19,7 +19,7 @@ const deleted = (map: Map<string, any>, key: string): Map<string, any> => {
 
 const TabView = () => {
   const { timetable, setTimetable } = useContext(TimetableContext);
-  const [ changeName, setChangeName ] = useState<string | null>(null);
+  const [changeName, setChangeName] = useState<string | null>(null);
   const tabNames = useMemo(() => Array.from(timetable.selected.keys()).sort(), [timetable]);
 
   const onAddTab = () => {
@@ -103,7 +103,7 @@ const TabView = () => {
           width: '1.6rem',
           height: '1.6rem',
           margin: '8px',
-          }}>
+        }}>
           <IconButton
             onClick={onAddTab}
             style={{ margin: '4px', width: '1.6rem', height: '1.6rem' }}>

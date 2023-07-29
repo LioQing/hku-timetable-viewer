@@ -6,7 +6,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import Panel from './Panel';
 import { getStartTimeFromIndex, getEndTimeFromIndex, getHourString, dayNames } from '../utils/TimeUtils';
-import { TimetableContext } from '../context/TimetableContext';
+import { TimetableContext } from '../contexts/TimetableContext';
 
 const TimetableOptions = () => {
   const { timetable, setTimetable } = useContext(TimetableContext);
@@ -15,8 +15,8 @@ const TimetableOptions = () => {
     const newHour = newHourUn as number[];
     const oldHour = [timetable.hour[0], timetable.hour[1] + 1];
     const hourFixed = activeThumb === 0
-    ? [Math.min(newHour[0], oldHour[1] - 1), oldHour[1] - 1]
-    : [oldHour[0], Math.max(newHour[1], oldHour[0] + 1) - 1];
+      ? [Math.min(newHour[0], oldHour[1] - 1), oldHour[1] - 1]
+      : [oldHour[0], Math.max(newHour[1], oldHour[0] + 1) - 1];
     setTimetable({ ...timetable, hour: hourFixed });
   };
 

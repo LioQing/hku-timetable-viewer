@@ -1,11 +1,11 @@
-import { Timetable } from '../context/TimetableContext';
+import { Timetable } from '../contexts/TimetableContext';
 import { getIndexFromStartTime, getIndexFromEndTime } from './TimeUtils';
 import Course from './Course';
 
 const areDateRangesOverlapped = (a_start: Date, a_end: Date, b_start: Date, b_end: Date) => {
   if (a_start <= b_start && b_start <= a_end) return true;
-  if (a_start <= b_end   && b_end   <= a_end) return true;
-  if (b_start <  a_start && a_end   <  b_end) return true;
+  if (a_start <= b_end && b_end <= a_end) return true;
+  if (b_start < a_start && a_end < b_end) return true;
   return false;
 };
 
@@ -51,7 +51,7 @@ class TimeSlotData {
           if (!day || dayIndex >= data[0].length || dayIndex < 0) {
             continue;
           }
-          
+
           const startIndex = getIndexFromStartTime(courseTime.startTime);
           const endIndex = getIndexFromEndTime(courseTime.endTime);
 
@@ -70,13 +70,13 @@ class TimeSlotData {
               && (
                 datum.overlapped === null
                 || !Array.from(datum.overlapped.keys()).includes(id)
-                )
+              )
             ) {
               // initialize overlapped if not initialized
               if (datum.overlapped === null) {
                 datum.overlapped = new Map([[datum.selected, []]]);
               }
-              
+
               // add id to overlapped
               datum.overlapped.set(id, []);
             }
@@ -125,7 +125,7 @@ class TimeSlotData {
       for (const courseTime of course.times) {
         for (const [dayIndex, day] of courseTime.weekday.entries()) {
           if (!day || dayIndex >= data[0].length || dayIndex < 0) continue;
-          
+
           const startIndex = getIndexFromStartTime(courseTime.startTime);
           const endIndex = getIndexFromEndTime(courseTime.endTime);
 

@@ -5,7 +5,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import Prompt from './Prompt';
 import Course from '../utils/Course';
 import { dayNames, getHourString } from '../utils/TimeUtils';
-import { TimetableContext } from '../context/TimetableContext';
+import { TimetableContext } from '../contexts/TimetableContext';
 import TabOptions from '../utils/TabOptions';
 
 interface Props {
@@ -17,7 +17,7 @@ const CourseInfo = ({ info, setInfo }: Props) => {
   const { timetable, setTimetable } = useContext(TimetableContext);
 
   if (!info) return null;
-  
+
   const isHidden = timetable.tabOptions.get(timetable.currTab)!.selectedHidden.get(info!)!;
 
   const maybeCourse = timetable.courses.get(info);

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Timetable, TimetableContext } from '../context/TimetableContext';
+import { Timetable, TimetableContext } from '../contexts/TimetableContext';
 import TabOptions from '../utils/TabOptions';
 
 interface Props {

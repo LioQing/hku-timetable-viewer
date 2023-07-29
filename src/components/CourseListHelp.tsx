@@ -22,6 +22,10 @@ const CourseListHelp = ({ open, onClose }: Props) => {
         The download button is for downloading the class timetable in .xlsx format.
         <br />
         <br />
+        <strong>Save/Load</strong><br />
+        The save and load button can save the current timetable to the browser's local storage and load the saved timetable respectively.
+        <br />
+        <br />
         <strong>Filtering</strong><br />
         The 'SELECTED ONLY' button is for filtering the course list to only show the courses you have selected.
         <br />

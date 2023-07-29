@@ -1,6 +1,6 @@
 {
   "name": "hku-timetable-viewer",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "homepage": "http://lioqing.github.io/hku-timetable-viewer",
   "dependencies": {
@@ -13,6 +13,7 @@
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
     "file-saver": "^2.0.5",
+    "lz-string": "^1.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
