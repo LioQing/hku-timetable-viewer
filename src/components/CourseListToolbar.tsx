@@ -17,6 +17,7 @@ import TabOptions from '../utils/TabOptions';
 import ThemeMode from '../utils/ThemeMode';
 import { TimetableContext } from '../contexts/TimetableContext';
 import { SettingsContext } from '../contexts/SettingsContext';
+import SaveLoad from './SaveLoad';
 
 interface Props {
   filters: CourseListFilters;
@@ -48,6 +49,13 @@ const CourseListToolbar = ({ filters, setFilters }: Props) => {
 
         {/* download upload buttons */}
         <DownloadUpload />
+      </Box>
+      <Box sx={{
+        display: 'flex', flexDirection: 'row', alignItems: 'center',
+        justifyContent: 'space-between', width: '100%',
+      }}>
+        {/* save load buttons */}
+        <SaveLoad />
 
         {/* light/dark mode toggle button */}
         <IconButton
@@ -56,9 +64,10 @@ const CourseListToolbar = ({ filters, setFilters }: Props) => {
             ...settings,
             themeMode: settings.themeMode === ThemeMode.Dark ? ThemeMode.Light : ThemeMode.Dark,
           })}
-          style={{ padding: '0.4rem', margin: '0.2rem' }}>
+          style={{ padding: '0.4rem 0rem', margin: '0.2rem' }}>
           {settings.themeMode === 'dark' ? <LightMode /> : <DarkMode />}
         </IconButton>
+
       </Box>
       <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
 

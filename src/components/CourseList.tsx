@@ -75,7 +75,6 @@ const CourseList = () => {
       renderCell: (params) => {
         const maybeCourse = timetable.courses.get(params.id.toString());
         if (!maybeCourse) {
-          console.error(`Course ${params.value} not found`);
           return null;
         }
 
