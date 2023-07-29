@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.1] - 2023-07-30
+
+### Added
+
+- 💾 Timetable can be saved in the browser's local storage now.
+- 😎 Dark mode is available now.
+
+### Fixed
+
+- Fix a visual glitch when hour range's lower bound is changed.
+
 ## [0.2.0] - 2023-07-23
 
 🎉 New academic year, new version! 🎉
