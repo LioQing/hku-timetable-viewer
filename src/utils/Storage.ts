@@ -2,6 +2,8 @@ import LZString from 'lz-string';
 import { Timetable } from '../contexts/TimetableContext';
 import Course from './Course';
 import TabOptions from './TabOptions';
+import { Settings } from '../contexts/SettingsContext';
+import ThemeMode from './ThemeMode';
 
 interface TabData {
   selected: string[];
@@ -94,4 +96,17 @@ const loadTimetable = (timetable: Timetable): Timetable => {
   return timetable;
 };
 
-export { saveTimetable, loadTimetable };
+const saveSettings = (settings: Settings) => {
+  localStorage.setItem('settings', JSON.stringify(settings));
+};
+
+const loadSettings = (): Settings => {
+  const item = localStorage.getItem('settings');
+  console.log(item);
+  if (item === null) return { themeMode: ThemeMode.Light };
+  const settings = JSON.parse(item);
+  console.log(settings);
+  return settings;
+};
+
+export { saveTimetable, loadTimetable, saveSettings, loadSettings };

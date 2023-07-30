@@ -3,6 +3,7 @@ import { createTheme } from '@mui/material/styles';
 import MuiThemeProvider from '@mui/material/styles/ThemeProvider';
 import { Settings, SettingsContext } from '../contexts/SettingsContext';
 import ThemeMode from '../utils/ThemeMode';
+import { saveSettings, loadSettings } from '../utils/Storage';
 
 interface Props {
   children?: React.ReactNode;
@@ -39,9 +40,12 @@ const themes = {
 };
 
 const SettingsProvider = ({ children }: Props) => {
-  const [settings, setSettings] = useState<Settings>({
-    themeMode: ThemeMode.Light,
-  });
+  const [settings, setSettingsState] = useState<Settings>(loadSettings());
+
+  const setSettings = (newSettings: Settings) => {
+    saveSettings(newSettings);
+    setSettingsState(newSettings);
+  };
 
   return (
     <MuiThemeProvider theme={themes[settings.themeMode]}>

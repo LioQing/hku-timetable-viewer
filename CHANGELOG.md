@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.2] - 2023-07-30
+
+### Added
+
+- 💾 Dark and light mode settings can be saved in the browser's local storage now.
+
 ## [0.2.1] - 2023-07-30
 
 ### Added
