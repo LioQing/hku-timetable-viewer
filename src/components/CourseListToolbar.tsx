@@ -64,7 +64,7 @@ const CourseListToolbar = ({ filters, setFilters }: Props) => {
             ...settings,
             themeMode: settings.themeMode === ThemeMode.Dark ? ThemeMode.Light : ThemeMode.Dark,
           })}
-          style={{ padding: '0.4rem 0rem', margin: '0.2rem' }}>
+          style={{ padding: '0.4rem', margin: '0.2rem' }}>
           {settings.themeMode === 'dark' ? <LightMode /> : <DarkMode />}
         </IconButton>
 
