@@ -18,7 +18,7 @@ interface Props {
 
 const ChangeTabName = ({ changeName, setChangeName }: Props) => {
   const { timetable, setTimetable } = useContext(TimetableContext);
-  const [newName, setNewName] = useState<string>(changeName as string);
+  const [newName, setNewName] = useState<string>(changeName ?? '');
 
   useEffect(() => {
     if (changeName !== null) {

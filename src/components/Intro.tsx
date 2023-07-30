@@ -2,8 +2,12 @@ import { useState } from 'react';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import HelpIcon from '@mui/icons-material/Help';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import BugReportIcon from '@mui/icons-material/BugReport';
 import Prompt from './Prompt';
 import packageJson from '../../package.json';
+import Box from '@mui/material/Box';
 
 const Intro = () => {
   const [open, setOpen] = useState(false);
@@ -47,14 +51,28 @@ const Intro = () => {
         <Button
           href='https://github.com/LioQing/hku-timetable-viewer'
           variant='outlined'
-          style={{ marginTop: '16px', marginRight: '8px' }}>
-          GitHub Repo
+          target='_blank'
+          startIcon={<GitHubIcon />}
+          style={{ marginTop: '16px' }}>
+          Source Code
         </Button>
+        <Box width='8px' style={{ display: 'inline-block' }} />
         <Button
           href='https://github.com/LioQing/hku-timetable-viewer/blob/master/CHANGELOG.md'
           variant='outlined'
-          style={{ marginTop: '16px', marginLeft: '8px' }}>
+          target='_blank'
+          startIcon={<AccessTimeIcon />}
+          style={{ marginTop: '16px' }}>
           Changelog
+        </Button>
+        <Box width='8px' style={{ display: 'inline-block' }} />
+        <Button
+          href='https://github.com/LioQing/hku-timetable-viewer/issues/new'
+          variant='outlined'
+          target='_blank'
+          startIcon={<BugReportIcon />}
+          style={{ marginTop: '16px' }}>
+          Report Issue
         </Button>
       </Prompt>
     </>

@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.2.2] - 2023-07-30
+
+### Added
+
+- 💾 Dark and light mode settings can be saved in the browser's local storage now.
+
+### Changed
+
+- 🛠 Change the behavior and appearance of the buttons in the introduction section.
+
+### Fixed
+
+- 👾 Fix an issue where changing tab name causes error messages in the console.
+
 ## [0.2.1] - 2023-07-30
 
 ### Added
