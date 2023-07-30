@@ -102,7 +102,6 @@ const saveSettings = (settings: Settings) => {
 
 const loadSettings = (): Settings => {
   const item = localStorage.getItem('settings');
-  console.log(item);
   if (item === null) return { themeMode: ThemeMode.Light };
   const settings = JSON.parse(item);
   console.log(settings);
