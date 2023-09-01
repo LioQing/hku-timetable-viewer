@@ -85,7 +85,9 @@ const saveTimetable = (timetable: Timetable) => {
   saveTabs(timetable);
 };
 
-const loadTimetable = (timetable: Timetable): Timetable => {
+const loadTimetable = (timetable: Timetable): Timetable | null => {
+  const item = localStorage.getItem('timetable');
+  if (item === null) return null;
   const courses = loadTimetableCourses();
   const tabs = loadTabs();
   timetable.courses = courses;

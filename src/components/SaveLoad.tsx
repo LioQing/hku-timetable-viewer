@@ -21,7 +21,11 @@ const SaveLoad = () => {
       </Button>
       <Button
         variant='outlined'
-        onClick={() => setTimetable({ ...loadTimetable(timetable) })}
+        onClick={() => {
+          const loaded = loadTimetable(timetable);
+          if (loaded === null) return;
+          setTimetable({ ...loaded })
+        }}
         style={{ padding: '0.4rem', margin: '0.2rem' }}>
         <FileOpenIcon fontSize='small' style={{ marginRight: '0.2rem' }} />
         <Typography variant='caption' noWrap style={{ position: 'relative', top: '0.1rem' }}>Load</Typography>
