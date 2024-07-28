@@ -51,7 +51,7 @@ class CourseTime {
   static timeFromExcel(data: any): Date {
     if (typeof data === 'number') {
       let date = new Date(1970, 1, 1);
-      date.setMilliseconds(data * 86400000);
+      date.setMilliseconds(data * 86400000 + 1000);
       return date;
     }
     return new Date(`1970-01-01T${data}`);
