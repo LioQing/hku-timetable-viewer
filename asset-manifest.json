@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/hku-timetable-viewer/static/js/main.3342b43b.js",
+    "main.js": "/hku-timetable-viewer/static/js/main.b52c227d.js",
     "index.html": "/hku-timetable-viewer/index.html",
-    "main.3342b43b.js.map": "/hku-timetable-viewer/static/js/main.3342b43b.js.map"
+    "main.b52c227d.js.map": "/hku-timetable-viewer/static/js/main.b52c227d.js.map"
   },
   "entrypoints": [
-    "static/js/main.3342b43b.js"
+    "static/js/main.b52c227d.js"
   ]
 }
