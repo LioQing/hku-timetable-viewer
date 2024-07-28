@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.2.3] - 2024-07-28
+
+🎉 It's a new academic year, and here is a new version! 🎉
+
+🍀 May this update bring you smooth sailing and great achievements ahead. 🍀
+
+### Added
+
+- ✨ New parsing algorithm to support the updated format for 2024-25 academic year, backward compatibility is maintained.
+
+### Removed
+
+- 🔇 The startup notice regarding local storage data lost due to domain name change is removed.
+
+### Fixed
+
+- 👾 Fixed a bug where incorrectly formated local storage theme data causes error.
+
 ## [0.2.2] - 2023-07-30
 
 ### Added

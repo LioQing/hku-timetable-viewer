@@ -106,7 +106,7 @@ const loadSettings = (): Settings => {
   const item = localStorage.getItem('settings');
   if (item === null) return { themeMode: ThemeMode.Light };
   const settings = JSON.parse(item);
-  console.log(settings);
+  if (settings.themeMode === undefined) return { themeMode: ThemeMode.Light };
   return settings;
 };
 

@@ -30,14 +30,31 @@ class CourseTime {
   }
 
   static fromData(data: any): CourseTime {
+    console.log(data);
     return new CourseTime(
-      new Date(data['START DATE']),
-      new Date(data['END DATE']),
-      new Date(`1970-01-01T${data['START TIME']}`),
-      new Date(`1970-01-01T${data['END TIME']}`),
+      CourseTime.dateFromExcel(data['START DATE']),
+      CourseTime.dateFromExcel(data['END DATE']),
+      CourseTime.timeFromExcel(data['START TIME']),
+      CourseTime.timeFromExcel(data['END TIME']),
       CourseTime.getDayBoolArray(data),
       data['VENUE'],
     );
+  }
+
+  static dateFromExcel(data: any): Date {
+    if (typeof data === 'number') {
+      return new Date((data - 25569) * 86400000);
+    }
+    return new Date(data);
+  }
+
+  static timeFromExcel(data: any): Date {
+    if (typeof data === 'number') {
+      let date = new Date(1970, 1, 1);
+      date.setMilliseconds(data * 86400000);
+      return date;
+    }
+    return new Date(`1970-01-01T${data}`);
   }
 
   private static getDayBoolArray(days: any): boolean[] {

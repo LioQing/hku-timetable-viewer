@@ -37,6 +37,9 @@ const LoadWorkbook = (buff: ArrayBuffer, timetable: Timetable) => {
   var courses: Map<string, Course> = new Map();
   for (const row of json) {
     const data = row as any;
+    for (const key in data) {
+      data[key.trim()] = data[key];
+    }
 
     const key: string = `${data['COURSE CODE']}-${data['CLASS SECTION']}`;
     const time = CourseTime.fromData(data);

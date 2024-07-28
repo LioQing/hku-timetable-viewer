@@ -27,9 +27,6 @@ const themes = {
     palette: {
       mode: 'light',
     },
-    transitions: {
-
-    }
   }),
   [ThemeMode.Dark]: createTheme({
     ...defaultTheme,
