@@ -30,7 +30,6 @@ class CourseTime {
   }
 
   static fromData(data: any): CourseTime {
-    console.log(data);
     return new CourseTime(
       CourseTime.dateFromExcel(data['START DATE']),
       CourseTime.dateFromExcel(data['END DATE']),
@@ -62,10 +61,11 @@ class CourseTime {
   
     const result: boolean[] = [];
     for (const day of daysName) {
-      result.push(day in days);
+      const value = days[day];
+      result.push(typeof value === 'string' ? value.trim().length > 0 : Boolean(value));
     }
   
-    return result
+    return result;
   }
 }
 
